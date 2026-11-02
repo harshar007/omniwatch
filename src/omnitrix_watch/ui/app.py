@@ -15,6 +15,7 @@ from omnitrix_watch.services.device_session import DeviceSession, SessionEvent, 
 from omnitrix_watch.sound import sound_player
 from omnitrix_watch.ui.screens.device_details import DeviceDetailsScreen
 from omnitrix_watch.ui.screens.device_picker import DevicePickerScreen
+from omnitrix_watch.ui.screens.donation import DonationScreen
 from omnitrix_watch.ui.screens.home import HomeScreen
 from omnitrix_watch.ui.screens.watchface import WatchFaceScreen
 from omnitrix_watch.ui.theme import (
@@ -77,11 +78,13 @@ class OmnitrixApp:
             on_inspect=self._action_inspect,
             on_export=self._action_export_inventory,
         )
+        self.screen_donation = DonationScreen(self.notebook)
 
         self.notebook.add(self.screen_home, text="  DIAL DASHBOARD  ")
         self.notebook.add(self.screen_watchface, text="  WATCH FACE (ALIENS & TIME)  ")
         self.notebook.add(self.screen_picker, text="  BLE SCANNER  ")
         self.notebook.add(self.screen_details, text="  GATT INVENTORY  ")
+        self.notebook.add(self.screen_donation, text="  💖 DONATION & SPONSOR  ")
 
         self.notebook.bind("<<NotebookTabChanged>>", self._on_tab_change)
 

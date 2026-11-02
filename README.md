@@ -60,13 +60,22 @@
 
 ---
 
-## 💖 Sponsor & Support the Galvan Lab
-
-**Power Azmuth's workshop!** Every donation directly funds hardware testing devices, BLE sniffers, and continuous development of open-source Ben 10 tools!
+## 💖 Galactic Donation & Sponsorship Page
 
 <div align="center">
 
-[![Sponsor on GitHub](https://img.shields.io/badge/GitHub%20Sponsors-Sponsor%20Now-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/harshar007)
+```ascii
+   ██████╗  ██████╗ ███╗   ██╗ █████╗ ████████╗███████╗
+   ██╔══██╗██╔═══██╗████╗  ██║██╔══██╗╚══██╔══╝██╔════╝
+   ██║  ██║██║   ██║██╔██╗ ██║███████║   ██║   █████╗  
+   ██║  ██║██║   ██║██║╚██╗██║██╔══██║   ██║   ██╔══╝  
+   ██████╔╝╚██████╔╝██║ ╚████║██║  ██║   ██║   ███████╗
+   ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+```
+
+**Help power Azmuth's workshop! Every contribution directly funds open-source research, reverse engineering tools, and free Omnitrix software for everyone.**
+
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-Sponsor%20Now-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/harshar007)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate%20$3-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/harshar007)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Tip%20Jar-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/harshar007)
 [![PayPal](https://img.shields.io/badge/PayPal-Send%20Funds-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/harshar007)
@@ -75,12 +84,31 @@
 
 | Level | Galactic Title | Monthly Support | Perks & Recognition |
 |:---:|---|:---:|---|
-| 🟢 | **Galvanic Cadet** | **$3 / mo** | • Permanent recognition in [`DONATION.md`](DONATION.md)<br>• Galactic Cadet badge in discussions |
+| 🟢 | **Galvanic Cadet** | **$3 / mo** | • Permanent recognition in [`DONATION.md`](DONATION.md)<br>• Galactic Cadet badge in community discussions |
 | ⚡ | **Omnitrix Bearer** | **$10 / mo** | • Vote on new Alien DNA profiles & animations<br>• Priority BLE hardware troubleshooting support |
 | 🧬 | **Azmuth's Apprentice** | **$25 / mo** | • Early access to pre-release watch face `.bin` builds<br>• Prominent logo/name featured on project releases |
 | 🌌 | **Galvan High Council** | **$100 / mo** | • Top-tier sponsor placement across all documentation<br>• 1-on-1 architecture & BLE reverse-engineering consult |
 
-📖 *Read the complete donation guidelines, crypto wallets, and transparency breakdown in [`DONATION.md`](DONATION.md).*
+### 💎 Web3 / Cryptocurrency Donation Addresses
+
+| Coin | Network | Address |
+|---|---|---|
+| **Bitcoin (BTC)** | Native SegWit / BTC | `bc1qomnitrixresearchprimegalvan007btc777` |
+| **Ethereum (ETH)** | ERC-20 | `0xOmnitrixWatchGalvanPrime77777777777777` |
+| **Tether (USDT)** | TRC-20 / ERC-20 | `TOmnitrixWatchGalvanUSDT77777777777777` |
+| **Solana (SOL)** | Solana Mainnet | `OmniWatchGalvanPrimeSOL77777777777777777` |
+
+### 📊 Transparent Fund Allocation
+```ascii
+┌────────────────────────────────────────────────────────┐
+│  🔬 Hardware Lab & Devices (Redmi/Xiaomi Watches): 50% │
+│  ⚙️ CI/CD Cloud Runners & Binary Artifact Hosting:  25% │
+│  🎨 Custom Vector Art & Sound Design Production:    15% │
+│  ☕ Coffee & Long Night Coding Fuel:                10% │
+└────────────────────────────────────────────────────────┘
+```
+
+📖 *Read the complete donation guidelines and backer list in the dedicated [`DONATION.md`](DONATION.md) page.*
 
 </div>
 
