@@ -12,11 +12,23 @@ from typing import Optional
 from omnitrix_watch.config import AppConfig
 from omnitrix_watch.models.device import DeviceSummary, GattInventory
 from omnitrix_watch.services.device_session import DeviceSession, SessionEvent, SessionState
+from omnitrix_watch.sound import sound_player
 from omnitrix_watch.ui.screens.device_details import DeviceDetailsScreen
 from omnitrix_watch.ui.screens.device_picker import DevicePickerScreen
 from omnitrix_watch.ui.screens.home import HomeScreen
 from omnitrix_watch.ui.screens.watchface import WatchFaceScreen
-from omnitrix_watch.ui.theme import apply_theme
+from omnitrix_watch.ui.theme import (
+    BG_DARK,
+    BG_PANEL,
+    BG_SURFACE,
+    BORDER_COLOR,
+    FONT_BADGE,
+    OMNI_GREEN,
+    OMNI_GREEN_DARK,
+    OMNI_GREEN_GLOW,
+    TEXT_MUTED,
+    apply_theme,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +83,52 @@ class OmnitrixApp:
         self.notebook.add(self.screen_picker, text="  BLE SCANNER  ")
         self.notebook.add(self.screen_details, text="  GATT INVENTORY  ")
 
+        self.notebook.bind("<<NotebookTabChanged>>", self._on_tab_change)
+
+        # Omnitrix Global HUD Telemetry Bar at bottom
+        footer_hud = tk.Frame(self.root, bg=BG_PANEL, bd=1, relief="solid")
+        footer_hud.pack(fill="x", side="bottom", padx=4, pady=4)
+
+        tk.Label(
+            footer_hud,
+            text="⚡ CORE: 100% NOMINAL",
+            bg=BG_PANEL,
+            fg=OMNI_GREEN,
+            font=("Consolas", 8, "bold"),
+            padx=8,
+            pady=3,
+        ).pack(side="left")
+
+        tk.Label(
+            footer_hud,
+            text="📡 BLE 5.0 ACTIVE",
+            bg=BG_PANEL,
+            fg=OMNI_GREEN_GLOW,
+            font=("Consolas", 8, "bold"),
+            padx=8,
+            pady=3,
+        ).pack(side="left")
+
+        tk.Label(
+            footer_hud,
+            text="🛡️ ZERO-WRITE SANCTIONED",
+            bg=BG_PANEL,
+            fg="#6ee7b7",
+            font=("Consolas", 8, "bold"),
+            padx=8,
+            pady=3,
+        ).pack(side="left")
+
+        tk.Label(
+            footer_hud,
+            text="⌚ TARGET: REDMI WATCH MOVE 2",
+            bg=OMNI_GREEN_DARK,
+            fg=OMNI_GREEN,
+            font=("Consolas", 8, "bold"),
+            padx=10,
+            pady=3,
+        ).pack(side="right")
+
         # Window closing handler
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -113,10 +171,15 @@ class OmnitrixApp:
         self._process_session_events()
         self.root.after(50, self._schedule_event_pump)
 
+    def _on_tab_change(self, _event: tk.Event) -> None:
+        """Play mechanical dial click when switching between Omnitrix modes."""
+        sound_player.play_dial_turn()
+
     def _schedule_dial_tick(self) -> None:
         """Advance dial rotation animation frame."""
         self.screen_home.tick_animation()
         self.screen_watchface.tick_animation()
+        self.screen_picker.tick_animation()
         self.root.after(60, self._schedule_dial_tick)
 
     def _process_session_events(self) -> None:

@@ -22,8 +22,8 @@ class UIConfig:
     """User interface appearance and behavior settings."""
 
     theme: str = "omnitrix_classic"
-    window_width: int = 860
-    window_height: int = 700
+    window_width: int = 940
+    window_height: int = 740
 
 
 @dataclass
