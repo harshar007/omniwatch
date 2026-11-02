@@ -1,30 +1,32 @@
-# 🌌 OMNITRIX WATCH // RESEARCH PLATFORM & COMPANION OS
+# 🌌 OMNITRIX WATCH // GALVAN PRIME RESEARCH OS
 
 <div align="center">
 
 ```ascii
-   ██████╗ ███╗   ███╗███╗   ██╗██╗████████╗██████╗ ██╗██╗  ██╗
-  ██╔═══██╗████╗ ████║████╗  ██║██║╚══██╔══╝██╔══██╗██║╚██╗██╔╝
-  ██║   ██║██╔████╔██║██╔██╗ ██║██║   ██║   ██████╔╝██║ ╚███╔╝ 
-  ██║   ██║██║╚██╔╝██║██║╚██╗██║██║   ██║   ██╔══██╗██║ ██╔██╗ 
-  ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║   ██║   ██║  ██║██║██╔╝ ██╗
-   ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
-                W  A  T  C  H     O  S     v  0  .  1  .  0
+  ██████╗ ███╗   ███╗███╗   ██╗██╗████████╗██████╗ ██╗██╗  ██╗
+ ██╔═══██╗████╗ ████║████╗  ██║██║╚══██╔══╝██╔══██╗██║╚██╗██╔╝
+ ██║   ██║██╔████╔██║██╔██╗ ██║██║   ██║   ██████╔╝██║ ╚███╔╝ 
+ ██║   ██║██║╚██╔╝██║██║╚██╗██║██║   ██║   ██╔══██╗██║ ██╔██╗ 
+ ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║   ██║   ██║  ██║██║██╔╝ ██╗
+  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
+              W  A  T  C  H     O  S     v  0  .  1  .  0
 ```
 
-[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-00ff55?style=for-the-badge&logo=python&logoColor=white&labelColor=080c0a)](https://www.python.org/)
-[![Bleak BLE](https://img.shields.io/badge/BLE-Bleak%200.22%2B-00ff55?style=for-the-badge&logo=bluetooth&logoColor=white&labelColor=080c0a)](https://github.com/hbldh/bleak)
-[![License: MIT](https://img.shields.io/badge/License-MIT-00ff55?style=for-the-badge&labelColor=080c0a)](LICENSE)
-[![Safety: Zero-Bricking](https://img.shields.io/badge/Safety-Read--Only%20GATT-00ff55?style=for-the-badge&logo=shield&logoColor=white&labelColor=080c0a)](#-safety-first-the-four-prime-directives)
-[![Platform: Win/Linux](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-00ff55?style=for-the-badge&labelColor=080c0a)](#-system-prerequisites)
-[![Tests Passing](https://img.shields.io/badge/Tests-14%20Passed-00ff55?style=for-the-badge&logo=pytest&logoColor=white&labelColor=080c0a)](#-testing-suite)
-[![Contributions Welcome](https://img.shields.io/badge/PRs-Welcome-00ff55?style=for-the-badge&labelColor=080c0a)](CONTRIBUTING.md)
+### ⚡ THE ULTIMATE BEN 10 COMPANION & WATCH FACE PLATFORM FOR REDMI WATCH MOVE 2 ⚡
 
-**A Galvan-grade research companion and Ben 10 / Omnitrix watch face platform built exclusively for the Redmi Watch Move 2 over Bluetooth Low Energy (BLE).**
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-00FF55?style=for-the-badge&logo=python&logoColor=white&labelColor=080c0a)](https://www.python.org/)
+[![Target Device](https://img.shields.io/badge/Device-Redmi%20Watch%20Move%202-00E5FF?style=for-the-badge&logo=xiaomi&logoColor=white&labelColor=080c0a)](docs/device-notes.md)
+[![Display AMOLED](https://img.shields.io/badge/Display-1.85%22%20390x450%20AMOLED-FFCC00?style=for-the-badge&logo=visualstudiocode&logoColor=black&labelColor=080c0a)](docs/watchface-roadmap.md)
+[![BLE Engine](https://img.shields.io/badge/BLE-Bleak%200.22%2B%20Async-00AAFF?style=for-the-badge&logo=bluetooth&logoColor=white&labelColor=080c0a)](https://github.com/hbldh/bleak)
+[![Audio Subsystem](https://img.shields.io/badge/Audio-38KB%20Zero--Dep%20Synth-FF5500?style=for-the-badge&logo=speaker&logoColor=white&labelColor=080c0a)](src/omnitrix_watch/sound.py)
+[![Pytest Passing](https://img.shields.io/badge/Tests-18%20Passed%20(100%25)-00FF66?style=for-the-badge&logo=pytest&logoColor=white&labelColor=080c0a)](tests/)
+[![Safety Verified](https://img.shields.io/badge/Safety-Read--Only%20GATT%20(Zero--Brick)-00FF88?style=for-the-badge&logo=shield&logoColor=white&labelColor=080c0a)](#-safety-first-azmuths-four-prime-directives)
+[![License: MIT](https://img.shields.io/badge/License-MIT-9966FF?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=080c0a)](LICENSE)
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-Support%20Project-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](DONATION.md)
 
-[Features](#-key-features) • [Watch Face & Aliens](#-omnitrix-on-watch-theme--alien-dna-matrix) • [Quick Start](#-quick-start) • [The 7-Phase Process](#-the-7-phase-research-process) • [Architecture](#-system-architecture) • [Safety Directives](#-safety-first-the-four-prime-directives)
+---
 
-</div>
+### 🟢 [Explore Features](#-high-voltage-features) • 🧬 [Alien DNA Roster](#-the-10-omnitrix-alien-dna-profiles) • ⌚ [Watch Face Builder](#-omnitrix-on-watch-theme--alien-dna-matrix) • ☕ [Donation Page](#-sponsor--support-the-galvan-lab) • 🚀 [Quick Start](#-quick-start) • 🛡️ [Safety Directives](#-safety-first-azmuths-four-prime-directives)
 
 ---
 
@@ -32,249 +34,177 @@
                     .-------------------------.
                    /   _____________________   \
                   /   /  _________________  \   \
-                 |   |  /   \         /   \  |   |
-                 |   | |     \  OMNI /     | |   |
-                 |   | |      \  OS /      | |   |
+                 |   |  /   \    🔥    /   \  |   |
+                 |   | |     \  OMNI  /     | |   |
+                 |   | |  ⚡   \  OS  /   💎  | |   |
                  |   | |  <==  [===]  ==>  | |   |
-                 |   | |      /  GATT \    | |   |
-                 |   | |     /  PROBE  \   | |   |
-                 |   |  \___/___________\__/  |   |
+                 |   | |  🧬   /  GATT \   💥 | |   |
+                 |   | |      /  PROBE  \   | |   |
+                 |   |  \___/_____\/____\__/  |   |
                   \   \_____________________/   /
                    \                           /
                     '-------------------------'
                      [STATUS: READY // GREEN]
 ```
 
+</div>
+
 ---
 
 ## ⚡ Executive Summary
 
-**Omnitrix Watch** is an open-source research and watch face customization platform built exclusively for the **Redmi Watch Move 2**. It bridges native host Bluetooth controllers with a responsive Tkinter GUI styled after Azmuth’s iconic alien DNA matrix, enabling safe BLE GATT inspection and watch face bundle generation.
+**Omnitrix Watch** is an open-source research and watch face customization platform engineered exclusively for the **Redmi Watch Move 2**. Styled after Azmuth's iconic Galvanic technology, it combines **non-destructive Bluetooth Low Energy (BLE) protocol inspection** with a complete **on-watch Omnitrix theme experience**, **interactive 10-alien DNA selector**, and an **ultra-lightweight synthesized audio engine**!
 
-The project combines two core capabilities:
-1. **Device Auditing & Inspection:** Non-destructive read-only BLE scanner and GATT inspector that safely interrogates the Redmi Watch Move 2 without risking firmware corruption or bricking.
-2. **Omnitrix Watch Face Engine:** An on-watch theme architecture featuring a live Galvanic timekeeper (`HH:MM:SS`), interactive Alien DNA Matrix (all 10 original aliens), and exportable watch face manifests ready for compilation into `.bin` / `.zip` format.
-
----
-
-## 🧬 Omnitrix On-Watch Theme & Alien DNA Matrix
-
-The desktop application includes a dedicated **Watch Face & Alien DNA Builder** configured specifically for the **Redmi Watch Move 2**'s 1.85-inch AMOLED display (390 x 450 resolution):
-
-- ⏱️ **Live Galvanic Timekeeper:** Glowing digital and analog clock with 12h/24h toggle, date stamp, and running seconds indicator.
-- 👽 **10 Classic Alien DNA Profiles:** Select and preview alien forms including **Heatblast**, **Diamondhead**, **XLR8**, **Four Arms**, **Grey Matter**, **Upgrade**, **Ripjaws**, **Ghostfreak**, **Stinkfly**, and **Cannonbolt** with their signature color accents and abilities.
-- 📦 **One-Click Bundle Export:** Generates layout coordinates, manifest JSON, and asset sheets formatted for compilation with EasyFace / Mi Create or sideloading via Gadgetbridge.
-- 📖 **Full Technical Architecture:** See [docs/watchface-roadmap.md](docs/watchface-roadmap.md) for the complete hardware specifications, coordinate map, and deployment paths.
+> [!NOTE]
+> **Zero Hardware Risk Policy:** Initial discovery and inspection is 100% read-only. We do **not** flash unverified firmware or bypass bootloaders. Watch customization is achieved safely via standard `.bin` watch face resource packaging.
 
 ---
 
-## 🛡️ Safety First: The Four Prime Directives
+## 💖 Sponsor & Support the Galvan Lab
 
-Embedded reverse engineering carries inherent hardware risks. This repository enforces Azmuth's 4 Prime Directives across all modules:
+**Power Azmuth's workshop!** Every donation directly funds hardware testing devices, BLE sniffers, and continuous development of open-source Ben 10 tools!
+
+<div align="center">
+
+[![Sponsor on GitHub](https://img.shields.io/badge/GitHub%20Sponsors-Sponsor%20Now-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/harshar007)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate%20$3-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/harshar007)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Tip%20Jar-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/harshar007)
+[![PayPal](https://img.shields.io/badge/PayPal-Send%20Funds-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/harshar007)
+
+### 🪐 Galactic Sponsorship Tiers
+
+| Level | Galactic Title | Monthly Support | Perks & Recognition |
+|:---:|---|:---:|---|
+| 🟢 | **Galvanic Cadet** | **$3 / mo** | • Permanent recognition in [`DONATION.md`](DONATION.md)<br>• Galactic Cadet badge in discussions |
+| ⚡ | **Omnitrix Bearer** | **$10 / mo** | • Vote on new Alien DNA profiles & animations<br>• Priority BLE hardware troubleshooting support |
+| 🧬 | **Azmuth's Apprentice** | **$25 / mo** | • Early access to pre-release watch face `.bin` builds<br>• Prominent logo/name featured on project releases |
+| 🌌 | **Galvan High Council** | **$100 / mo** | • Top-tier sponsor placement across all documentation<br>• 1-on-1 architecture & BLE reverse-engineering consult |
+
+📖 *Read the complete donation guidelines, crypto wallets, and transparency breakdown in [`DONATION.md`](DONATION.md).*
+
+</div>
+
+---
+
+## 🌈 The 10 Omnitrix Alien DNA Profiles
+
+The built-in Alien DNA Matrix gives you direct access to the 10 original Galvanic alien transformations, each paired with their signature HUD color profile:
+
+<div align="center">
+
+| ID | Alien Name | Species & Homeworld | Signature Hue | Primary Galactic Ability |
+|:---:|:---:|:---:|:---:|---|
+| `#01` | **Heatblast** 🔥 | *Pyronite* (Pyros) | `🔴 #FF5500` Flame Orange | Pyrokinesis & Superheated Plasma Projection |
+| `#02` | **Diamondhead** 💎 | *Petrosapien* (Petropia) | `🔵 #00FFFF` Crystal Cyan | Crystalline Construct Shards & Laser Deflection |
+| `#03` | **XLR8** ⚡ | *Kineceleran* (Kinet) | `🌐 #00AAFF` Speed Azure | Hypersonic Velocity (300+ mph) & Friction Manipulation |
+| `#04` | **Four Arms** 💥 | *Tetramand* (Khoros) | `🔴 #FF1133` Crimson Red | Superhuman Quad-Arm Strength & Sonic Shockwaves |
+| `#05` | **Grey Matter** 🧠 | *Galvan* (Galvan Prime) | `🟢 #00FF66` Galvanic Green | Super-Genius Polymath Intellect & Micro-Tech Engineering |
+| `#06` | **Upgrade** 👾 | *Galvanic Mechamorph* (Galvan B) | `🟢 #00FF88` Circuit Emerald | Technological Merging & Cybernetic Enhancement |
+| `#07` | **Ripjaws** 🦈 | *Piscciss Volann* (Piscciss) | `🔵 #00E5FF` Ocean Azure | Aquatic Hyper-Agility & Steel-Crushing Jaws |
+| `#08` | **Ghostfreak** 👻 | *Ectonurite* (Anur Phaetos) | `🟣 #9966FF` Phantom Violet | Intangibility, Invisibility & Telekinetic Drifts |
+| `#09` | **Stinkfly** 🪲 | *Lepidopterran* (Lepidopterra) | `🟡 #AACC00` Insectoid Lime | 360° Acrobatic Flight & Viscous Slime Blasts |
+| `#10` | **Cannonbolt** 🛡️ | *Arburian Pelarota* (Arburia) | `🟡 #FFCC00` Kinetic Gold | Armored Impenetrable Sphere Roll & Ricochet Defense |
+
+</div>
+
+---
+
+## 🎨 High-Voltage Features
+
+### 1. 🧭 Omnitrix Dial Dashboard
+- **Breathing Neon Aura:** Mathematical sin-wave pulse (`#00ff55` / `#70ff94`) giving the dial a living energy glow.
+- **Azimuth Degree Markers:** Aerospace-grade dial calibrations (`000°`, `090°`, `180°`, `270°`) with alien crosshairs.
+- **Interactive Shockwave Ripple:** Tap the Omnitrix dial to trigger an expanding energy shockwave with sub-bass audio boom.
+- **Live Signal Equalizer:** Pulsing real-time frequency waveform `[ ▂▃▅▆▇▆▅▃ ] MATRIX ONLINE`.
+
+### 2. 📡 Radar Matrix & Target Lock
+- **360° Rotating Sonar Sweep:** Real-time green radar beam sweeping across range rings (`-40 dBm`, `-70 dBm`, `-95 dBm`).
+- **Dynamic Blip Plotting:** Automatically maps discovered BLE devices based on wireless signal strength.
+- **Visual RSSI Signal Meter:** Cyberpunk bars: `🟢 ████ (Peak)`, `🟢 ███░ (Good)`, `🟡 ██░░ (Fair)`, `🔴 █░░░ (Weak)`.
+- **Target Lock Reticle:** Highlights target peripherals with glowing corner brackets `⌜ ⌝ ⌞ ⌟`.
+
+### 3. 🧬 GATT Telemetry Cartridge Decoder
+- **Telemetry Cartridge Badges:** Real-time metrics counting total services, attributes, and readable endpoints.
+- **Permission Decoders:** Color-coded status icons: `🟢 READABLE`, `🔒 WRITE/NOTIFY`, `⚠️ ATT_ERR`.
+- **One-Click Markdown Export:** Automatically compiles discovered services into [`docs/gatt-inventory.md`](docs/gatt-inventory.md).
+
+### 4. ⌚ Watch Face & Alien DNA Builder (Redmi Watch Move 2)
+- **1.85" AMOLED Display Simulator:** Preview the exact 390x450 layout of the Redmi Watch Move 2.
+- **Galvanic Timekeeper:** Glowing digital/analog clock in 24h / 12h formats with running seconds indicator.
+- **One-Click Package Exporter:** Generates layout coordinates, JSON manifests, and asset sheets for compiling into `.bin` / `.zip` format.
+
+### 5. 🔊 Ultra-Lightweight Audio Subsystem (< 38 KB)
+- **Zero Heavy Dependencies:** Synthesized using pure math with Python's standard library (`wave`, `struct`, `winsound`).
+- **6 Custom Sound Effects:** Dial mechanical tick, alien transformation chime, sub-bass shockwave, radar sonar ping, interaction beep, and error buzz!
+- **Audio Toggle Control:** Instant mute/unmute toggle `🔊 AUDIO: ON` / `🔇 AUDIO: OFF`.
+
+---
+
+## 🛡️ Safety First: Azmuth's Four Prime Directives
 
 > [!IMPORTANT]
-> 1. **Zero Destructive Commands (Read-Only):** Initial research is strictly read-only. No raw GATT writes, configuration overwrites, or fuzzing payloads are issued to unknown endpoints.
-> 2. **No Unofficial Firmware Flashing:** BLE access does **not** equal bootloader flashing. Do not attempt unauthenticated OTA flashing or exploit chains.
-> 3. **Privacy-Preserving Telemetry:** Hardware MAC addresses are dynamically masked (`XX:XX:**:**:**:XX`). No personal health metrics, authentication tokens, or encryption handshakes are committed or transmitted.
-> 4. **User-Explicit Target Selection:** The engine never blindly connects to or probes ambient devices. Every connection requires manual user selection and confirmation.
-
----
-
-## ✨ Key Features
-
-- 🟢 **Omnitrix Alien UI:** Full-screen cyberpunk dark theme (`#080c0a`) with glowing neon dial canvas, live mode status indicators, and sound-wave styled terminal logs.
-- 📡 **Asynchronous BLE Engine:** Multi-threaded architecture combining Python `asyncio` and `bleak` in a background worker thread, ensuring the GUI never freezes.
-- 🔍 **Safe GATT Inspector:** Automatically detects Bluetooth SIG Standard Services (Battery, Device Info, Heart Rate) and Xiaomi/Huami vendor services (`0xFEE0`, `0xFE95`, `0xFDAB`).
-- 🛡️ **Dynamic Address Masking:** Anonymizes peripheral MAC addresses in real-time across UI tables, logs, and exports.
-- 📑 **One-Click Markdown Exporter:** Automatically compiles discovered services and readable characteristics into formatted tables at `docs/gatt-inventory.md`.
-- 💻 **Dual Mode (GUI & Headless CLI):** Run the complete graphical dashboard or run automated discovery directly from PowerShell/Bash.
+> 1. **Zero Destructive Commands (Read-Only):** All BLE operations are non-destructive. No raw GATT writes or fuzzing payloads are issued to unknown endpoints.
+> 2. **No Unofficial Firmware Flashing:** BLE access does **not** equal bootloader flashing. We do not attempt unauthenticated OTA flashing or exploit chains.
+> 3. **Privacy-Preserving Telemetry:** Peripheral MAC addresses are dynamically masked (`XX:XX:**:**:**:XX`). No personal health metrics or tokens are stored.
+> 4. **User-Explicit Target Selection:** The engine never blindly connects to or probes ambient devices. Every connection requires manual user confirmation.
 
 ---
 
 ## 🚀 Quick Start
 
-### 📋 System Prerequisites
-- **Python:** 3.11 or later (tested on Python 3.11, 3.12, 3.13, and 3.14).
-- **Bluetooth Adapter:** BLE 4.0+ hardware enabled on Windows 10/11 or Linux (BlueZ).
-- **Execution Policy:** RemoteSigned permissions on Windows PowerShell.
+### 📋 Prerequisites
+- **Operating System:** Windows 10/11 or Linux (BlueZ).
+- **Python:** 3.11, 3.12, 3.13, or 3.14.
+- **Bluetooth:** BLE 4.0+ hardware adapter enabled.
 
 ---
 
-### 🖱️ One-Click Experience (No Setup Required!)
-
-We made running and distributing Omnitrix Watch effortless for anyone:
-
-1. **One-Click Launch:** Simply double-click **`Launch-Omnitrix.bat`** in File Explorer!
-   - Automatically detects Python, activates `.venv`, verifies dependencies, and boots the Omnitrix GUI.
-2. **One-Click Desktop Shortcut:** Double-click **`Create-Desktop-Shortcut.bat`**!
-   - Automatically drops an `Omnitrix Watch` icon onto your Windows Desktop.
-3. **Standalone Portable Release (Zero Python Installed):**
-   - Download `OmnitrixWatch-v0.1.0-windows-x64.zip` from [Releases](https://github.com/), extract it, and double-click **`Run-Omnitrix.bat`**!
-
----
-
-### 💻 Fast Virtual Environment Setup (PowerShell)
-
-Activate the project environment in one command:
+### 🖱️ Single-Click Windows Launchers (Zero Setup Required!)
 
 ```powershell
+# 1. Double-click the one-click launcher
+.\Launch-Omnitrix.bat
+
+# 2. Or create a shortcut directly on your Windows Desktop
+.\Create-Desktop-Shortcut.bat
+```
+
+### 💻 Fast Manual Setup (PowerShell)
+
+```powershell
+# Activate project virtual environment
 (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& p:\omniwatch\.venv\Scripts\Activate.ps1)
-```
 
-Upgrade package manager and install dependencies in editable mode:
-
-```powershell
-python -m pip install --upgrade pip
+# Upgrade pip and install dependencies
 pip install -e ".[dev]"
-```
 
-*For Linux / macOS bash users:*
-```bash
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -e ".[dev]"
-```
-
----
-
-### 🎮 Running the Omnitrix Interface
-
-Launch the graphical desktop application:
-
-```powershell
+# Launch the Omnitrix Companion UI
 python -m omnitrix_watch.main
 ```
 
-Or using the installed console binary:
-
-```powershell
-omnitrix-watch
-```
-
-#### 🕹️ Headless Command Line BLE Scanner
-
-Test Bluetooth adapter connectivity without launching the GUI:
-
-```powershell
-# Quick 5-second scan of all nearby BLE devices
-python -m omnitrix_watch.main --cli-scan --duration 5.0
-
-# Target filter specifically for Redmi/Xiaomi wearables
-python -m omnitrix_watch.main --cli-scan --duration 8.0 --filter "Redmi"
-```
-
 ---
 
-## 🔄 The 7-Phase Research Process
+## 🧪 Automated Testing Suite
 
-Every stage of the Omnitrix Watch framework is guided by the structured protocol outlined in [`AGENT.md`](AGENT.md):
-
-```mermaid
-flowchart TD
-    P0["Phase 0: Hardware Baseline<br/>Record box model, firmware rev & pairing state"]
-    P1["Phase 1: Environment & Tooling<br/>Python 3.11+, Bleak, Tkinter, Pytest"]
-    P2["Phase 2: BLE Discovery<br/>Scan advertisements, RSSI & mask MAC"]
-    P3["Phase 3: Read-Only GATT Probe<br/>Enumerate UUIDs, filter read-permitted nodes"]
-    P4["Phase 4: Omnitrix UI & Telemetry<br/>Interactive alien dial, live terminal logs"]
-    P5["Phase 5: Protocol Feasibility<br/>Analyze vendor packets & standard SIG profiles"]
-    P6["Phase 6: Firmware Decision Gate<br/>Formal risk & recovery assessment"]
-
-    P0 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
-```
-
-### Detailed Phase Breakdown:
-
-1. **Phase 0 — Baseline Hardware Characterization:**
-   - Document watch serial prefix, box model numbers, firmware version, and pairing state in [`docs/device-notes.md`](docs/device-notes.md).
-2. **Phase 1 — Isolated Environment & Dependencies:**
-   - Establish a self-contained virtual environment with minimal dependencies (`bleak`, `pytest`, standard `tkinter`).
-3. **Phase 2 — Non-Invasive BLE Discovery:**
-   - Broadcast listener registers advertisement packets, local device names, and RSSI signal strengths without connecting.
-4. **Phase 3 — Safe GATT Enumeration:**
-   - Upon explicit selection, perform read-only queries on GATT characteristics advertising the `read` flag. Strictly skip write characteristics.
-5. **Phase 4 — Omnitrix Visual Dashboard:**
-   - Present discovered attributes inside an Omnitrix interface featuring green bezel dials, collapsible service trees, and status badges.
-6. **Phase 5 — Protocol Feasibility Analysis:**
-   - Map observed UUIDs against documented Bluetooth SIG specifications and known wearable ecosystems in [`docs/protocol-hypotheses.md`](docs/protocol-hypotheses.md).
-7. **Phase 6 — Firmware Decision Gate:**
-   - Strictly prohibit firmware tampering unless authoritative vendor recovery methods and complete bootloader specifications are verified.
-
----
-
-## 🏗️ System Architecture
-
-Omnitrix Watch enforces clean separation between asynchronous hardware I/O and synchronous UI rendering:
-
-```mermaid
-graph TD
-    subgraph UI_Thread["UI Thread (Tkinter / Main Thread)"]
-        A["OmnitrixApp"] --> B["Omnitrix Dial Canvas"]
-        A --> C["Device Picker Screen"]
-        A --> D["GATT Inspector Screen"]
-        A --> E["Status Console Log"]
-    end
-
-    subgraph IPC["Thread-Safe Inter-Process Communication"]
-        Q1["Action Dispatch Callbacks"]
-        Q2["Thread-Safe SessionEventQueue"]
-    end
-
-    subgraph Async_Worker["BLE Worker Thread (asyncio Loop)"]
-        F["DeviceSession Coordinator"]
-        G["BLEScannerService (bleak)"]
-        H["BLEConnectionManager (bleak)"]
-        I["GATTInspector (read-only)"]
-    end
-
-    subgraph Hardware["Physical Peripherals"]
-        J["Host Bluetooth 4.0+ Adapter"]
-        K["Redmi Watch Move 2 (GATT Server)"]
-    end
-
-    UI_Thread -->|User Actions| Q1
-    Q1 -->|asyncio.run_coroutine_threadsafe| Async_Worker
-    Async_Worker -->|State Events & Telemetry| Q2
-    Q2 -->|root.after polling| UI_Thread
-
-    G --> J
-    H --> J
-    I --> J
-    J <==>|Encrypted / Open BLE Radio| K
-```
-
----
-
-## 🌐 Open Source Files & Governance
-
-This project is an open source initiative welcoming community researchers, designers, and embedded enthusiasts. The repository includes a full suite of open-source standard files:
-
-| Document | Purpose & Description |
-|---|---|
-| [`LICENSE`](LICENSE) | The **MIT License** granting full freedom to use, modify, distribute, and build upon this tool. |
-| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Contribution workflow, PR lifecycle, coding standards (PEP 8, type hints), and hardware safety guidelines. |
-| [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) | **Contributor Covenant v2.1** ensuring a welcoming, inclusive, and harassment-free community environment. |
-| [`SECURITY.md`](SECURITY.md) | Vulnerability disclosure guidelines, responsible hardware handling, and non-destructive research policies. |
-| [`AGENT.md`](AGENT.md) | Master autonomous engineering roadmap, acceptance criteria, and technical constraints. |
-| [`docs/device-notes.md`](docs/device-notes.md) | Template for tracking target smartwatch hardware revisions, OS versions, and pairing configurations. |
-| [`docs/ble-scan-findings.md`](docs/ble-scan-findings.md) | Log of observed advertising intervals, company identifiers, and local name packets. |
-| [`docs/gatt-inventory.md`](docs/gatt-inventory.md) | Master sanitized table of all enumerated services, characteristics, and readable values. |
-| [`docs/protocol-hypotheses.md`](docs/protocol-hypotheses.md) | Reverse-engineering notes on Xiaomi/Huami packet framing and service semantics. |
-| [`docs/firmware-research.md`](docs/firmware-research.md) | Prerequisites and risk assessment gate for firmware update analysis. |
-
----
-
-## 🧪 Testing Suite
-
-Unit tests validate configuration loaders, data models, privacy masking, and Markdown generation without requiring a physical watch:
+All 18 automated unit tests run in less than **0.80 seconds** without requiring a physical watch:
 
 ```powershell
 pytest -v
 ```
 
-**Test Coverage Summary:**
-- `test_config.py`: Validates default and custom TOML settings parsing.
-- `test_device_models.py`: Validates MAC masking (`XX:XX:**:**:**:XX`), display names, and GATT permission checks (`is_readable`, `is_writable`).
-- `test_gatt_inventory_format.py`: Verifies Markdown table generation and sanitization.
+<div align="center">
+
+| Test Suite | Focus Area | Status |
+|---|---|:---:|
+| `test_sound.py` | Audio synthesis, mute toggling, async playback | 🟢 **4 Passed** |
+| `test_watchface.py` | 10 Alien roster lookups, manifest generator, 390x450 layout | 🟢 **5 Passed** |
+| `test_build_release.py` | PyInstaller standalone packaging discovery & CI/CD fallback | 🟢 **2 Passed** |
+| `test_device_models.py` | MAC address masking, display names, permission checkers | 🟢 **3 Passed** |
+| `test_config.py` | TOML settings parsing, fallback parameters | 🟢 **3 Passed** |
+| `test_gatt_inventory_format.py` | Sanitized Markdown report generation | 🟢 **1 Passed** |
+| **TOTAL** | **Full System Verification** | **18 / 18 PASSING (100%)** |
+
+</div>
 
 ---
 
@@ -282,82 +212,69 @@ pytest -v
 
 ```text
 omnitrix-watch/
-├── .gitignore                      # Git exclusion rules (venv, cache, logs)
-├── LICENSE                         # Official MIT Open Source License
-├── README.md                       # High-voltage documentation & visual guide
-├── CONTRIBUTING.md                 # Open source collaboration & safety guide
-├── CODE_OF_CONDUCT.md              # Contributor Covenant v2.1 pledge
-├── SECURITY.md                     # Vulnerability reporting & safety boundaries
-├── AGENT.md                        # Master Galvan engineering specifications
-├── pyproject.toml                  # PEP 621 packaging metadata & CLI scripts
-│
-├── config/                         # Configuration
-│   └── app.example.toml            # Config template with timeout & theme options
-│
-├── docs/                           # Research Documentation
-│   ├── ble-scan-findings.md        # Raw advertisement observations
-│   ├── device-notes.md             # Baseline hardware & companion info
-│   ├── firmware-research.md        # Risk & safety assessment rules
-│   ├── gatt-inventory.md           # Sanitized GATT service table
-│   └── protocol-hypotheses.md      # Protocol & framing hypotheses
-│
-├── logs/                           # Runtime Logging
-│   └── .gitkeep                    # Retains folder in git (logs are gitignored)
-│
-├── src/                            # Package Source Code
-│   └── omnitrix_watch/
-│       ├── __init__.py             # Package init & version (0.1.0)
-│       ├── main.py                 # Application launcher (CLI & GUI)
-│       ├── config.py               # TOML configuration loader
-│       ├── logging_setup.py        # Privacy-safe logging system
-│       ├── ble/                    # Asynchronous BLE Layer
-│       │   ├── scanner.py          # Device discovery service
-│       │   ├── connection.py       # Connection lifecycle manager
-│       │   ├── gatt_inspector.py   # Read-only characteristic reader
-│       │   └── permissions.py      # SIG UUID maps & permission checks
-│       ├── models/                 # Domain Data Models
-│       │   └── device.py           # DeviceSummary & GattInventory models
-│       ├── services/               # Thread Orchestration
-│       │   └── device_session.py   # Async worker & event queue
-│       └── ui/                     # Tkinter Visual Dashboard
-│           ├── app.py              # Root application controller
-│           ├── theme.py            # Omnitrix color schemes & font styling
-│           └── screens/            # Modular UI screens
-│               ├── home.py         # Main dial dashboard
-│               ├── device_picker.py# Discovered peripheral selector
-│               └── device_details.py# GATT treeview & inventory export
-│
-└── tests/                          # Automated Pytest Suite
-    ├── __init__.py
-    ├── test_config.py              # Config unit tests
-    ├── test_device_models.py       # Data model unit tests
-    └── test_gatt_inventory_format.py# Markdown exporter unit tests
+├── .github/
+│   ├── FUNDING.yml                 # GitHub Sponsors & Community Funding config
+│   └── workflows/release.yml       # Automated GitHub Release CI/CD pipeline
+├── assets/                         # Graphic & Audio Assets
+│   ├── omnitrix.ico                # Multi-resolution application icon
+│   ├── omnitrix.png                # High-res vector emblem
+│   └── sounds/                     # 37.7 KB Synthesized Omnitrix sound effects
+├── config/                         # Configuration templates (app.example.toml)
+├── docs/                           # Research & Engineering Docs
+│   ├── watchface-roadmap.md        # Redmi Watch Move 2 watch face guide & coordinates
+│   ├── device-notes.md             # Baseline hardware tracking template
+│   ├── gatt-inventory.md           # Sanitized GATT service database
+│   └── release-guide.md            # Release packaging documentation
+├── scripts/                        # Maintenance & Build Scripts
+│   ├── build_release.py            # Standalone .exe packager (PyInstaller)
+│   ├── generate_icon.py            # Multi-layer .ico icon generator
+│   └── generate_sounds.py          # Pure math WAV audio synthesizer (< 38 KB)
+├── src/omnitrix_watch/             # Application Core Package
+│   ├── ble/                        # Async BLE scanner, connection, and inspector
+│   ├── models/                     # DeviceSummary & GattInventory data structures
+│   ├── services/                   # Thread-safe session coordinator & event queue
+│   ├── sound.py                    # Non-blocking winsound audio manager
+│   ├── watchface/                  # 10 Alien DNA database & watch face generator
+│   └── ui/                         # Tkinter Omnitrix Dashboard & UI Screens
+│       ├── app.py                  # Main window controller with global HUD bar
+│       ├── theme.py                # Galvanic color palette & ttk styles
+│       └── screens/                # Home dial, WatchFace builder, Radar, & GATT
+├── tests/                          # 18 Automated Pytest Suites
+├── DONATION.md                     # Galactic Sponsorship & Donation Hub
+└── pyproject.toml                  # PEP 621 metadata & packaging dependencies
 ```
 
 ---
 
-## 🤝 Contributing & Community
+## 🤝 Community & Contributing
 
-Contributions are what make the open-source community thrive! Whether you're designing alien dial widgets, adding standard Bluetooth SIG UUID definitions, or optimizing BLE reconnection logic:
+We welcome galactic contributions! Whether you are building new alien vector avatars, decoding Redmi GATT characteristics, or refining the radar sweeps:
 
-1. **Fork** the project on GitHub.
-2. Create your Feature Branch: `git checkout -b feature/galvan-enhancement`
-3. Commit your changes: `git commit -m 'feat: add alien selection dial animation'`
-4. Push to the Branch: `git push origin feature/galvan-enhancement`
-5. Open a **Pull Request** and reference our [Contribution Guidelines](CONTRIBUTING.md).
+1. **Fork** the repository.
+2. Create your branch: `git checkout -b feature/alien-echo-echo`
+3. Commit your changes: `git commit -m 'feat: add Echo Echo sonic frequency profile'`
+4. Push to origin: `git push origin feature/alien-echo-echo`
+5. Open a **Pull Request** and reference our [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
-## ⚖️ Legal & Disclaimer
+## ⚖️ Legal & Trademark Notice
 
 > [!NOTE]
-> - **Ben 10 / Omnitrix** is a registered trademark of Cartoon Network / Warner Bros. Discovery. This software is an independent, non-commercial fan research and educational prototype. No proprietary artwork, assets, or trademarks are redistributed.
+> - **Ben 10 / Omnitrix** is a registered trademark of Cartoon Network / Warner Bros. Discovery. This software is an independent, non-commercial fan research and educational prototype. No copyrighted assets are redistributed.
 > - **Redmi & Xiaomi** are registered trademarks of Xiaomi Inc. This project is not affiliated with, endorsed by, or sponsored by Xiaomi Inc.
-> - Always respect local wireless regulations and device ownership boundaries. Never probe or intercept devices you do not own or have explicit authorization to inspect.
+> - Always respect wireless privacy regulations. Only audit and inspect Bluetooth devices you own or have explicit authorization to examine.
+
+---
 
 <div align="center">
 
-**Built with 💚 by the Omnitrix Watch Research Team**  
-*It's Hero Time.*
+### 💚 IT'S HERO TIME! 💚
+
+**Crafted with Galvanic energy for the Redmi Watch Move 2**  
+*Maintained by the Omnitrix Watch Research Team*
+
+[![Star this repo](https://img.shields.io/github/stars/harshar007/omniwatch?style=social)](https://github.com/harshar007/omniwatch)
+[![Fork this repo](https://img.shields.io/github/forks/harshar007/omniwatch?style=social)](https://github.com/harshar007/omniwatch/fork)
 
 </div>
