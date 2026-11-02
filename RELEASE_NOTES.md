@@ -1,4 +1,4 @@
-# 🌌 Omnitrix Watch v0.1.0 — Initial Research Release
+# 🌌 Omnitrix Watch v0.1.0 — Galvan Prime Protocol (Single-Click Release)
 
 > **Codename:** Galvan Prime Protocol  
 > **Target Peripheral:** Redmi Watch Move  
@@ -8,27 +8,27 @@
 
 ## ⚡ What's New in v0.1.0
 
-We are thrilled to announce the inaugural open-source release of **Omnitrix Watch**! This release establishes a secure, non-destructive Bluetooth Low Energy (BLE) research platform paired with a Ben 10 / Omnitrix-themed cyberpunk companion interface.
+We are thrilled to announce the official release of **Omnitrix Watch**! This release brings a standalone single-click Windows executable (`OmnitrixWatch.exe`) that runs anywhere with zero setup, combined with an ultra-fancy Ben 10 / Omnitrix visual experience.
 
-### 🌟 Highlights & Capabilities
-- **🟢 Omnitrix Alien UI:** Full-screen dark dashboard (`#080c0a`) with glowing neon dial canvas, live mode status indicators, and sound-wave styled terminal logs.
-- **📡 Asynchronous BLE Engine:** Multi-threaded architecture combining Python `asyncio` and `bleak` in a background worker thread, ensuring the GUI never freezes.
-- **🔍 Safe GATT Inspector:** Automatically detects Bluetooth SIG Standard Services (Battery, Device Info, Heart Rate) and Xiaomi/Huami vendor services (`0xFEE0`, `0xFE95`, `0xFDAB`).
-- **🛡️ Dynamic Address Masking:** Anonymizes peripheral MAC addresses in real-time across UI tables, logs, and exports (`XX:XX:**:**:**:XX`).
-- **📑 One-Click Markdown Exporter:** Automatically compiles discovered services and readable characteristics into formatted tables at `docs/gatt-inventory.md`.
-- **💻 One-Click Windows Launchers:** 
-  - `Launch-Omnitrix.bat`: Double-click to automatically activate venv, verify packages, and launch.
-  - `Create-Desktop-Shortcut.bat`: Creates a desktop shortcut directly on your Windows desktop.
-  - Standalone portable Windows x64 binary (zero Python required).
+### 🌟 Ultra-Fancy Features
+- **🟢 Embedded Omnitrix Application Icon:** High-resolution multi-size `.ico` emblem embedded into the `.exe` binary and the application window titlebar.
+- **⚡ Breathing Neon Dial Aura:** Smooth mathematical breathing pulse when idle (`math.sin`), giving the Omnitrix dial a living alien energy glow.
+- **🎯 Cyberpunk HUD Reticle Brackets:** 4 glowing corner targeting brackets `⌜ ⌝ ⌞ ⌟` framing the dial with precision crosshair ticks.
+- **🧭 Azimuth Degree Dial Markers:** Outer bezel displays aerospace-grade dial degree marks (`000°`, `090°`, `180°`, `270°`) and alien tick notches.
+- **📡 Rotating Radar Sweep Beam:** 360-degree animated radar beam with fading sweep trail sweeps across the dial during BLE scanning and GATT inspection.
+- **💥 Interactive Shockwave Ripple:** Tap or click the Omnitrix dial anytime to trigger an expanding green energy shockwave!
+- **📶 Animated Signal Equalizer:** Real-time audio/signal frequency waveform `[ ▂▃▅▆▇▆▅▃ ] MATRIX ONLINE` pulses continuously in the telemetry header.
 
 ---
 
-## 📦 Release Artifacts
+## 📦 Single-Click Downloads & Artifacts
 
 | File | Description | SHA-256 Checksum |
 |---|---|---|
-| `OmnitrixWatch-v0.1.0-windows-x64.zip` | Standalone portable Windows executable bundle (no Python installation required) | `130f977446f0d5f6acc5d296cb87fb919913f476fb80c9b65475cc738c51532d` |
-| `OmnitrixWatch-v0.1.0-windows-x64.zip.sha256` | SHA-256 verification hash | — |
+| **`OmnitrixWatch.exe`** | **Single standalone `.exe` file (Double-click to run! Zero Python required!)** | `b24a7af5c7efa2632ff02de92638b8662219b87ad77f7af8f7e47ca7d457fc4f` |
+| `OmnitrixWatch.exe.sha256` | SHA-256 hash for standalone executable | — |
+| `OmnitrixWatch-v0.1.0-windows-x64.zip` | Full portable zip bundle (includes docs, configs, assets, and launcher) | `8daaf7c7a5fa89e23bb5039b6f1a285b54bdcb0d98498b72cb9a35748eebb6a3` |
+| `OmnitrixWatch-v0.1.0-windows-x64.zip.sha256` | SHA-256 hash for zip bundle | — |
 
 ---
 

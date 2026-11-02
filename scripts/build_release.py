@@ -26,10 +26,10 @@ def compute_sha256(file_path: Path) -> str:
     return sha256.hexdigest()
 
 
-def build_executable() -> Path:
-    """Build standalone executable using PyInstaller."""
+def build_single_exe() -> Path:
+    """Build single standalone .exe file using PyInstaller."""
     print("=" * 65)
-    print(f"BUILDING OMNITRIX WATCH STANDALONE EXECUTABLE (v{VERSION})")
+    print(f"BUILDING SINGLE-FILE STANDALONE EXECUTABLE (v{VERSION})")
     print("=" * 65)
 
     pyinstaller_exe = PROJECT_ROOT / ".venv" / "Scripts" / "pyinstaller.exe"
@@ -39,104 +39,113 @@ def build_executable() -> Path:
     if not pyinstaller_exe.exists():
         raise FileNotFoundError("PyInstaller not found. Run: pip install pyinstaller")
 
-    # Command arguments for PyInstaller
+    ico_path = PROJECT_ROOT / "assets" / "omnitrix.ico"
+    assets_dir = PROJECT_ROOT / "assets"
+
+    # Command arguments for PyInstaller single-file build
     cmd = [
         str(pyinstaller_exe),
         "--noconfirm",
         "--clean",
         "--name",
         "OmnitrixWatch",
-        "--onedir",
+        "--onefile",
         "--windowed",
         "--collect-all",
         "bleak",
+        "--add-data",
+        f"{assets_dir}{os.pathsep}assets",
         "--hidden-import",
         "tkinter",
         "--hidden-import",
         "omnitrix_watch",
         "--paths",
         str(PROJECT_ROOT / "src"),
-        str(PROJECT_ROOT / "src" / "omnitrix_watch" / "main.py"),
     ]
+
+    if ico_path.exists():
+        cmd.extend(["--icon", str(ico_path)])
+
+    cmd.append(str(PROJECT_ROOT / "src" / "omnitrix_watch" / "main.py"))
 
     print(f"Running: {' '.join(cmd)}\n")
     result = subprocess.run(cmd, cwd=str(PROJECT_ROOT))
     if result.returncode != 0:
         raise RuntimeError(f"PyInstaller build failed with exit code {result.returncode}")
 
-    output_dir = DIST_DIR / "OmnitrixWatch"
-    if not output_dir.exists():
-        raise FileNotFoundError(f"Expected output folder {output_dir} was not created.")
+    single_exe = DIST_DIR / "OmnitrixWatch.exe"
+    if not single_exe.exists():
+        raise FileNotFoundError(f"Expected single executable {single_exe} was not found.")
 
-    print(f"\n[+] Standalone executable folder created at: {output_dir}")
-    return output_dir
+    print(f"\n[+] Standalone single-file executable created at: {single_exe}")
+    return single_exe
 
 
-def package_release(output_dir: Path) -> Path:
-    """Bundle executable folder into release zip archive."""
+def package_release(single_exe: Path) -> Path:
+    """Bundle standalone executable and ancillary files into release/."""
     print("\n" + "=" * 65)
     print("PACKAGING RELEASE ARTIFACTS")
     print("=" * 65)
 
     RELEASE_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 1. Copy standalone single-click OmnitrixWatch.exe directly into release/
+    rel_exe = RELEASE_DIR / "OmnitrixWatch.exe"
+    shutil.copy2(single_exe, rel_exe)
+    exe_checksum = compute_sha256(rel_exe)
+    (RELEASE_DIR / "OmnitrixWatch.exe.sha256").write_text(
+        f"{exe_checksum}  OmnitrixWatch.exe\n", encoding="utf-8"
+    )
+    print(f"[+] Standalone single-click EXE: {rel_exe}")
+    print(f"[+] EXE SHA-256: {exe_checksum}")
+
+    # 2. Package complete release bundle zip
     zip_name = f"OmnitrixWatch-v{VERSION}-windows-x64.zip"
     zip_path = RELEASE_DIR / zip_name
 
-    # Copy ancillary files into the distribution folder
-    shutil.copy2(PROJECT_ROOT / "LICENSE", output_dir / "LICENSE")
-    shutil.copy2(PROJECT_ROOT / "README.md", output_dir / "README.md")
-    
-    docs_dest = output_dir / "docs"
-    if docs_dest.exists():
-        shutil.rmtree(docs_dest)
-    shutil.copytree(PROJECT_ROOT / "docs", docs_dest)
+    staging_dir = RELEASE_DIR / "staging"
+    if staging_dir.exists():
+        shutil.rmtree(staging_dir)
+    staging_dir.mkdir(parents=True, exist_ok=True)
 
-    config_dest = output_dir / "config"
-    if config_dest.exists():
-        shutil.rmtree(config_dest)
-    shutil.copytree(PROJECT_ROOT / "config", config_dest)
+    shutil.copy2(single_exe, staging_dir / "OmnitrixWatch.exe")
+    shutil.copy2(PROJECT_ROOT / "LICENSE", staging_dir / "LICENSE")
+    shutil.copy2(PROJECT_ROOT / "README.md", staging_dir / "README.md")
+    shutil.copytree(PROJECT_ROOT / "docs", staging_dir / "docs")
+    shutil.copytree(PROJECT_ROOT / "config", staging_dir / "config")
+    shutil.copytree(PROJECT_ROOT / "assets", staging_dir / "assets")
 
-    # Create root launcher inside the release zip
-    launcher_content = """@echo off
-start "" "%~dp0OmnitrixWatch\\OmnitrixWatch.exe"
-"""
-    launcher_path = RELEASE_DIR / "Run-Omnitrix.bat"
-    launcher_path.write_text(launcher_content, encoding="utf-8")
+    # Add quick launcher bat inside zip
+    launcher_bat = staging_dir / "Run-Omnitrix.bat"
+    launcher_bat.write_text('@echo off\nstart "" "%~dp0OmnitrixWatch.exe"\n', encoding="utf-8")
 
     print(f"Compressing into {zip_path}...")
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-        # Add root runner
-        zipf.write(launcher_path, arcname="Run-Omnitrix.bat")
-        
-        # Add all files in output_dir
-        for root, _, files in os.walk(output_dir):
+        for root, _, files in os.walk(staging_dir):
             for file in files:
-                abs_path = Path(root) / file
-                rel_path = abs_path.relative_to(DIST_DIR)
-                zipf.write(abs_path, arcname=str(rel_path))
+                abs_p = Path(root) / file
+                rel_p = abs_p.relative_to(staging_dir)
+                zipf.write(abs_p, arcname=str(rel_p))
 
-    if launcher_path.exists():
-        launcher_path.unlink()
+    shutil.rmtree(staging_dir)
 
-    # Generate checksum
-    checksum = compute_sha256(zip_path)
-    checksum_file = RELEASE_DIR / f"{zip_name}.sha256"
-    checksum_file.write_text(f"{checksum}  {zip_name}\n", encoding="utf-8")
+    zip_checksum = compute_sha256(zip_path)
+    (RELEASE_DIR / f"{zip_name}.sha256").write_text(
+        f"{zip_checksum}  {zip_name}\n", encoding="utf-8"
+    )
+    print(f"[+] Release Zip Archive: {zip_path}")
+    print(f"[+] Zip SHA-256: {zip_checksum}")
 
-    print(f"[+] Release archive: {zip_path}")
-    print(f"[+] SHA-256 Checksum: {checksum}")
-    print(f"[+] Checksum file: {checksum_file}")
-
-    return zip_path
+    return rel_exe
 
 
 def main() -> None:
     """Main build sequence."""
     try:
-        output_dir = build_executable()
-        zip_path = package_release(output_dir)
+        single_exe = build_single_exe()
+        package_release(single_exe)
         print("\n" + "=" * 65)
-        print("RELEASE BUILD COMPLETE AND READY FOR DISTRIBUTION!")
+        print("ALL RELEASE ARTIFACTS BUILT SUCCESSFULLY!")
         print("=" * 65)
     except Exception as e:
         print(f"\n[-] Build failed: {e}", file=sys.stderr)

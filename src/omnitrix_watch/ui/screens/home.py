@@ -45,15 +45,28 @@ class OmnitrixDial(tk.Canvas):
         )
         self.size = size
         self.center = size / 2
-        self.radius = (size / 2) - 15
+        self.radius = (size / 2) - 18
         self.angle_offset = 0.0
+        self.radar_angle = 0.0
+        self.pulse_phase = 0.0
+        self.shockwave_radius = 0.0
         self.is_animating = False
+        self.current_state = SessionState.IDLE
         self.state_label = "STANDBY"
         self.state_color = OMNI_GREEN
+        
+        # Interactive click
+        self.bind("<Button-1>", self._on_dial_click)
+        self.draw()
+
+    def _on_dial_click(self, _event: tk.Event) -> None:
+        """Trigger an expanding shockwave animation when user taps the dial."""
+        self.shockwave_radius = 20.0
         self.draw()
 
     def update_state(self, state: SessionState) -> None:
         """Update visual dial status based on session state."""
+        self.current_state = state
         if state == SessionState.IDLE:
             self.state_label = "READY"
             self.state_color = OMNI_GREEN
@@ -81,15 +94,50 @@ class OmnitrixDial(tk.Canvas):
         self.draw()
 
     def tick_animation(self) -> None:
-        """Advance dial rotation animation frame."""
+        """Advance dial rotation and breathing pulse animation frame."""
+        self.pulse_phase = (self.pulse_phase + 0.08) % (2 * math.pi)
+
+        if self.shockwave_radius > 0:
+            self.shockwave_radius += 6.0
+            if self.shockwave_radius > self.radius * 1.3:
+                self.shockwave_radius = 0.0
+
         if self.is_animating:
             self.angle_offset = (self.angle_offset + 0.08) % (2 * math.pi)
-            self.draw()
+            self.radar_angle = (self.radar_angle + 0.12) % (2 * math.pi)
+        
+        self.draw()
 
     def draw(self) -> None:
-        """Render all layers of the Omnitrix faceplate."""
+        """Render all layers of the futuristic Omnitrix faceplate."""
         self.delete("all")
         cx, cy, r = self.center, self.center, self.radius
+
+        # 1. Cyber Targeting Reticle Corners ⌜ ⌝ ⌞ ⌟
+        corner_len = 16
+        bracket_pad = 12
+        b_left = cx - r - bracket_pad
+        b_right = cx + r + bracket_pad
+        b_top = cy - r - bracket_pad
+        b_bot = cy + r + bracket_pad
+
+        reticle_color = OMNI_GREEN_DARK
+        # Top-Left
+        self.create_line(b_left, b_top + corner_len, b_left, b_top, fill=reticle_color, width=2)
+        self.create_line(b_left, b_top, b_left + corner_len, b_top, fill=reticle_color, width=2)
+        # Top-Right
+        self.create_line(b_right - corner_len, b_top, b_right, b_top, fill=reticle_color, width=2)
+        self.create_line(b_right, b_top, b_right, b_top + corner_len, fill=reticle_color, width=2)
+        # Bottom-Left
+        self.create_line(b_left, b_bot - corner_len, b_left, b_bot, fill=reticle_color, width=2)
+        self.create_line(b_left, b_bot, b_left + corner_len, b_bot, fill=reticle_color, width=2)
+        # Bottom-Right
+        self.create_line(b_right - corner_len, b_bot, b_right, b_bot, fill=reticle_color, width=2)
+        self.create_line(b_right, b_bot, b_right, b_bot - corner_len, fill=reticle_color, width=2)
+
+        # 2. Breathing outer aura
+        pulse_alpha = 0.5 + 0.5 * math.sin(self.pulse_phase)
+        outer_glow_color = OMNI_GREEN_DIM if pulse_alpha > 0.5 else OMNI_GREEN_DARK
 
         # Outer casing ring (dark titanium alloy motif)
         self.create_oval(
@@ -97,32 +145,57 @@ class OmnitrixDial(tk.Canvas):
             fill=BG_PANEL, outline=BORDER_COLOR, width=3
         )
 
+        # Segmented Power Meter Arcs (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock)
+        for arc_start in [15, 105, 195, 285]:
+            self.create_arc(
+                cx - r + 4, cy - r + 4, cx + r - 4, cy + r - 4,
+                start=arc_start, extent=60, style="arc",
+                outline=outer_glow_color, width=3
+            )
+
         # Concentric groove
         self.create_oval(
             cx - r + 8, cy - r + 8, cx + r - 8, cy + r - 8,
             outline=OMNI_GREEN_DARK, width=2
         )
 
-        # Outer bezel tick marks
-        num_notches = 16
+        # 3. Outer bezel tick marks & alien degree markers
+        num_notches = 24
         for i in range(num_notches):
             angle = (i * 2 * math.pi / num_notches) + self.angle_offset
             outer_x = cx + (r - 2) * math.cos(angle)
             outer_y = cy + (r - 2) * math.sin(angle)
-            inner_x = cx + (r - 9) * math.cos(angle)
-            inner_y = cy + (r - 9) * math.sin(angle)
-            tick_color = OMNI_GREEN if (i % 4 == 0) else OMNI_GREEN_DIM
-            self.create_line(outer_x, outer_y, inner_x, inner_y, fill=tick_color, width=2)
+            inner_x = cx + (r - 10) * math.cos(angle)
+            inner_y = cy + (r - 10) * math.sin(angle)
+            tick_color = OMNI_GREEN if (i % 6 == 0) else (OMNI_GREEN_GLOW if (i % 3 == 0) else OMNI_GREEN_DARK)
+            self.create_line(outer_x, outer_y, inner_x, inner_y, fill=tick_color, width=2 if (i % 3 == 0) else 1)
 
-        # Inner bezel circle
-        core_r = r - 22
+        # 4. Degree Labels
+        self.create_text(cx, cy - r + 16, text="000°", fill=TEXT_MUTED, font=FONT_BADGE)
+        self.create_text(cx + r - 16, cy, text="090°", fill=TEXT_MUTED, font=FONT_BADGE)
+        self.create_text(cx, cy + r - 16, text="180°", fill=TEXT_MUTED, font=FONT_BADGE)
+        self.create_text(cx - r + 16, cy, text="270°", fill=TEXT_MUTED, font=FONT_BADGE)
+
+        # 5. Inner bezel circle
+        core_r = r - 24
         self.create_oval(
             cx - core_r, cy - core_r, cx + core_r, cy + core_r,
             fill="#051009", outline=self.state_color, width=2
         )
 
-        # Omnitrix Hourglass / Silhouette motif (two opposing triangles intersecting at center)
-        tri_size = core_r * 0.75
+        # 6. Active Radar Sweep Line (When scanning or inspecting)
+        if self.is_animating:
+            sweep_x = cx + core_r * math.cos(self.radar_angle)
+            sweep_y = cy + core_r * math.sin(self.radar_angle)
+            self.create_line(cx, cy, sweep_x, sweep_y, fill=OMNI_CORE_GLOW, width=3)
+            # Fading trail
+            trail_angle = self.radar_angle - 0.25
+            trail_x = cx + core_r * math.cos(trail_angle)
+            trail_y = cy + core_r * math.sin(trail_angle)
+            self.create_line(cx, cy, trail_x, trail_y, fill=OMNI_GREEN_DIM, width=1)
+
+        # 7. Omnitrix Hourglass / Silhouette motif (two opposing triangles intersecting at center)
+        tri_size = core_r * 0.72
         # Top triangle pointing down
         top_pts = [
             cx - tri_size, cy - tri_size,
@@ -136,18 +209,26 @@ class OmnitrixDial(tk.Canvas):
             cx, cy,
         ]
 
-        glow_fill = self.state_color
+        glow_fill = OMNI_GREEN_GLOW if (pulse_alpha > 0.6 and not self.is_animating) else self.state_color
         self.create_polygon(top_pts, fill=glow_fill, outline=OMNI_GREEN_DIM, width=2)
         self.create_polygon(bot_pts, fill=glow_fill, outline=OMNI_GREEN_DIM, width=2)
 
-        # Center core ring
-        center_core_r = 20
+        # 8. Interactive Shockwave Ripple
+        if self.shockwave_radius > 0:
+            self.create_oval(
+                cx - self.shockwave_radius, cy - self.shockwave_radius,
+                cx + self.shockwave_radius, cy + self.shockwave_radius,
+                outline=OMNI_CORE_GLOW, width=2
+            )
+
+        # 9. Center core ring
+        center_core_r = 22
         self.create_oval(
             cx - center_core_r, cy - center_core_r, cx + center_core_r, cy + center_core_r,
             fill=BG_DARK, outline=self.state_color, width=2
         )
 
-        # Status text in center core
+        # 10. Status text in center core
         self.create_text(
             cx, cy,
             text=self.state_label,
@@ -349,6 +430,23 @@ class HomeScreen(ttk.Frame):
 
         ttk.Label(log_head, text="SYSTEM TELEMETRY CONSOLE", foreground=OMNI_GREEN, font=FONT_HEADING).pack(side="left")
 
+        self._wave_index = 0
+        self._waveforms = [
+            "[ ▂▃▅▆▇▆▅▃ ] MATRIX ONLINE",
+            "[ ▃▅▆▇█▇▆▅ ] MATRIX ONLINE",
+            "[ ▅▆▇█▇▆▅▃ ] MATRIX ONLINE",
+            "[ ▆▇█▇▆▅▃▂ ] MATRIX ONLINE",
+            "[ ▇█▇▆▅▃▂  ] MATRIX ONLINE",
+            "[ █▇▆▅▃▂ ▂ ] MATRIX ONLINE",
+        ]
+        self.lbl_matrix_monitor = ttk.Label(
+            log_head,
+            text=self._waveforms[0],
+            foreground=OMNI_GREEN_GLOW,
+            font=FONT_BADGE,
+        )
+        self.lbl_matrix_monitor.pack(side="left", padx=(10, 0))
+
         btn_view_inv = ttk.Button(
             log_head,
             text="View Inventory",
@@ -376,6 +474,12 @@ class HomeScreen(ttk.Frame):
         self.txt_log.insert("end", f"> {text}\n")
         self.txt_log.see("end")
         self.txt_log.configure(state="disabled")
+
+    def tick_animation(self) -> None:
+        """Advance dial and HUD telemetry animations."""
+        self.dial.tick_animation()
+        self._wave_index = (self._wave_index + 1) % len(self._waveforms)
+        self.lbl_matrix_monitor.configure(text=self._waveforms[self._wave_index])
 
     def set_device_info(self, device: Optional[DeviceSummary]) -> None:
         """Update selected device display."""

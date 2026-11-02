@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
+import sys
 import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import Optional
@@ -29,6 +31,9 @@ class OmnitrixApp:
         self.root.title("OMNITRIX - Watch Companion & Research Platform")
         self.root.geometry(f"{self.config.ui.window_width}x{self.config.ui.window_height}")
         self.root.minsize(780, 600)
+
+        # Set Omnitrix App Icon if available
+        self._set_app_icon()
 
         apply_theme(self.root)
 
@@ -72,6 +77,33 @@ class OmnitrixApp:
         self.screen_home.append_log("Omnitrix Research Suite initialized.")
         self.screen_home.append_log("Safety Mode: Read-only active. No writes or firmware modifications permitted.")
 
+    def _set_app_icon(self) -> None:
+        """Load and set the Omnitrix window icon."""
+        candidates = []
+        base_dir = getattr(sys, "_MEIPASS", None)
+        if base_dir:
+            candidates.append(Path(base_dir) / "assets" / "omnitrix.ico")
+            candidates.append(Path(base_dir) / "assets" / "omnitrix.png")
+
+        # Project tree locations
+        project_root = Path(__file__).resolve().parent.parent.parent.parent
+        candidates.append(project_root / "assets" / "omnitrix.ico")
+        candidates.append(project_root / "assets" / "omnitrix.png")
+        candidates.append(Path("assets") / "omnitrix.ico")
+
+        for path in candidates:
+            if path.exists():
+                try:
+                    if path.suffix == ".ico":
+                        self.root.iconbitmap(str(path))
+                        return
+                    elif path.suffix == ".png":
+                        img = tk.PhotoImage(file=str(path))
+                        self.root.iconphoto(True, img)
+                        return
+                except Exception as e:
+                    logger.debug("Failed setting icon from %s: %s", path, e)
+
     def _schedule_event_pump(self) -> None:
         """Poll the background session queue every 50ms."""
         self._process_session_events()
@@ -79,7 +111,7 @@ class OmnitrixApp:
 
     def _schedule_dial_tick(self) -> None:
         """Advance dial rotation animation frame."""
-        self.screen_home.dial.tick_animation()
+        self.screen_home.tick_animation()
         self.root.after(60, self._schedule_dial_tick)
 
     def _process_session_events(self) -> None:
