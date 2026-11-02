@@ -78,7 +78,7 @@ class GattInventory:
     """Sanitized collection of inspected services and characteristics."""
 
     device_name: str
-    device_model: str = "Redmi Watch Move"
+    device_model: str = "Redmi Watch Move 2"
     timestamp: str = field(
         default_factory=lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
     )

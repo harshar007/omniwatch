@@ -2,20 +2,15 @@
 
 ## 1. Mission
 
-Build a safe, research-first companion project for a **Redmi Watch
-Move** with a **Ben 10 / Omnitrix-inspired visual experience**.
+Build a safe, research-first companion project exclusively for the **Redmi Watch Move 2** with a **Ben 10 / Omnitrix-inspired visual experience**, working towards a custom on-watch Omnitrix theme with alien DNA selection and live clock timekeeping.
 
-Initial milestone: discover the watch over Bluetooth Low Energy (BLE),
-document what is observable, and build a desktop Python prototype for
-device discovery and read-only GATT inspection. Do not assume the watch
-supports custom firmware, sideloaded apps, or a replacement operating
-system.
+Initial milestone: discover the Redmi Watch Move 2 over Bluetooth Low Energy (BLE), document what is observable, and build a desktop Python prototype for device discovery and read-only GATT inspection. Do not assume the watch supports custom firmware, sideloaded apps, or a replacement operating system.
 
 ## 2. Project goals
 
-1.  Identify the watch and its BLE advertising behavior.
+1.  Identify the Redmi Watch Move 2 and its BLE advertising behavior.
 2.  Scan for nearby BLE devices and let the user explicitly select their
-    own watch.
+    own Redmi Watch Move 2.
 3.  Connect using supported BLE APIs and inspect exposed GATT services
     and characteristics.
 4.  Read only characteristics that advertise read permission.
@@ -24,9 +19,11 @@ system.
 6.  Build a Python-based Omnitrix-themed companion UI prototype.
 7.  Keep all device-specific protocol findings documented and
     reproducible.
-8.  Investigate firmware-update support only through official
-    documentation, documented update flows, or firmware files the user
-    is authorized to examine.
+8.  Investigate firmware-update and watch face customization support only
+    through official documentation, documented watch face containers (.bin/.zip),
+    or files the user is authorized to examine.
+9.  Develop the Omnitrix On-Watch Face architecture: package alien DNA profiles
+    and live timekeeping onto the physical Redmi Watch Move 2 display.
 
 ## 3. Non-goals and safety constraints
 
@@ -47,7 +44,7 @@ system.
 
 ## 4. Initial technical assumptions
 
--   Target: Redmi Watch Move; exact hardware revision and firmware
+-   Target: Redmi Watch Move 2; exact hardware revision and firmware
     version must be recorded by the user.
 -   Host: Windows or Linux desktop.
 -   Language: Python 3.11 or later.
@@ -279,10 +276,18 @@ unavailable due to device, permission, or protocol restrictions. -
 ## 11. Definition of done for the first milestone
 
 The first milestone is complete when: - The Python app launches. - It
-scans nearby BLE devices. - The user can select the Redmi Watch Move
+scans nearby BLE devices. - The user can select the Redmi Watch Move 2
 manually. - The app connects if the operating system and watch permit
 it. - The app lists readable GATT services and characteristics without
 writing to the device. - Results can be exported as a sanitized Markdown
 inventory. - The UI has the initial Omnitrix-inspired theme. - README
 instructions explain setup, limitations, and safe disconnect. - No
 firmware flashing or undocumented write operations are present.
+
+## 12. Roadmap: Omnitrix On-Watch Theme (Aliens & Time)
+
+For the next phase, the repository extends from desktop companion inspection to creating and installing a custom Omnitrix Watch Face on the Redmi Watch Move 2:
+1. **Galvanic Timekeeper Display:** Digital and analog hour/minute/second clock elements styled with neon Galvanic typography and live tick animations.
+2. **Alien DNA Matrix Roster:** Switchable alien silhouette and portrait layer in the dial center (Heatblast, Diamondhead, XLR8, Four Arms, Grey Matter, Upgrade, Ripjaws, Ghostfreak, Stinkfly, Cannonbolt).
+3. **Watch Face Resource Packaging:** Compiling layout coordinates, font glyphs, and image sprite sheets into the `.bin` / `.zip` format required by Xiaomi / Redmi watch face engines.
+4. **Safe Transfer Pipeline:** Transferring watch face packages to the device via documented installer interfaces without compromising device recovery or security.

@@ -1,7 +1,7 @@
 # 🌌 Omnitrix Watch v0.1.0 — Galvan Prime Protocol (Single-Click Release)
 
 > **Codename:** Galvan Prime Protocol  
-> **Target Peripheral:** Redmi Watch Move  
+> **Target Peripheral:** Redmi Watch Move 2  
 > **Release Date:** November 2, 2026  
 
 ---

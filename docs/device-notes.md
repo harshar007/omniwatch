@@ -1,10 +1,10 @@
-# Device Notes: Redmi Watch Move
+# Device Notes: Redmi Watch Move 2
 
 ## Phase 0 - Baseline Information
 
 Please fill in the following details about the specific target device before conducting extensive BLE sessions:
 
-- **Target Device Marketing Name:** Redmi Watch Move
+- **Target Device Marketing Name:** Redmi Watch Move 2 (Redmi Move 2 / Redmi Watch 2 Series)
 - **Model / Hardware Identifier (from device label or box):** *To be recorded* (e.g. M2345W1)
 - **Firmware Version (from official companion app / watch settings):** *To be recorded*
 - **Official Companion App Name:** *Mi Fitness (Xiaomi Wear)*

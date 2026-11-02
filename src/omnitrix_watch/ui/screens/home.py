@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 import math
 import tkinter as tk
 from tkinter import ttk
@@ -9,6 +10,7 @@ from typing import Callable, Optional
 
 from omnitrix_watch.models.device import DeviceSummary
 from omnitrix_watch.services.device_session import SessionState
+from omnitrix_watch.sound import sound_player
 from omnitrix_watch.ui.theme import (
     BG_DARK,
     BG_PANEL,
@@ -62,6 +64,7 @@ class OmnitrixDial(tk.Canvas):
     def _on_dial_click(self, _event: tk.Event) -> None:
         """Trigger an expanding shockwave animation when user taps the dial."""
         self.shockwave_radius = 20.0
+        sound_player.play_shockwave()
         self.draw()
 
     def update_state(self, state: SessionState) -> None:
@@ -75,6 +78,7 @@ class OmnitrixDial(tk.Canvas):
             self.state_label = "SCANNING"
             self.state_color = OMNI_GREEN_GLOW
             self.is_animating = True
+            sound_player.play_radar_ping()
         elif state == SessionState.CONNECTING:
             self.state_label = "SYNCING"
             self.state_color = COLOR_WARNING
@@ -83,14 +87,17 @@ class OmnitrixDial(tk.Canvas):
             self.state_label = "LINKED"
             self.state_color = OMNI_GREEN_GLOW
             self.is_animating = False
+            sound_player.play_alien_select()
         elif state == SessionState.INSPECTING:
             self.state_label = "INSPECT"
             self.state_color = OMNI_GREEN
             self.is_animating = True
+            sound_player.play_radar_ping()
         elif state == SessionState.ERROR:
             self.state_label = "FAULT"
             self.state_color = COLOR_ERROR
             self.is_animating = False
+            sound_player.play_error()
         self.draw()
 
     def tick_animation(self) -> None:
@@ -249,6 +256,7 @@ class HomeScreen(ttk.Frame):
         on_inspect: Callable[[], None],
         on_open_picker: Callable[[], None],
         on_open_inventory: Callable[[], None],
+        on_open_watchface: Optional[Callable[[], None]] = None,
     ) -> None:
         super().__init__(parent, style="TFrame")
         self.on_scan = on_scan
@@ -257,6 +265,7 @@ class HomeScreen(ttk.Frame):
         self.on_inspect = on_inspect
         self.on_open_picker = on_open_picker
         self.on_open_inventory = on_open_inventory
+        self.on_open_watchface = on_open_watchface
 
         self._build_ui()
 
@@ -278,6 +287,23 @@ class HomeScreen(ttk.Frame):
         badge_frame = ttk.Frame(header_frame, style="TFrame")
         badge_frame.pack(side="right")
 
+        self.btn_sound = tk.Button(
+            badge_frame,
+            text="🔊 AUDIO: ON",
+            bg=BG_PANEL,
+            fg=OMNI_GREEN,
+            activebackground=OMNI_GREEN_DARK,
+            activeforeground=OMNI_GREEN_GLOW,
+            font=FONT_BADGE,
+            padx=8,
+            pady=2,
+            relief="solid",
+            bd=1,
+            cursor="hand2",
+            command=self._toggle_audio,
+        )
+        self.btn_sound.pack(side="right", padx=(5, 0))
+
         mode_badge = tk.Label(
             badge_frame,
             text="READ-ONLY MODE",
@@ -293,7 +319,7 @@ class HomeScreen(ttk.Frame):
 
         target_badge = tk.Label(
             badge_frame,
-            text="TARGET: REDMI WATCH MOVE",
+            text="TARGET: REDMI WATCH MOVE 2",
             bg=BG_PANEL,
             fg=TEXT_MUTED,
             font=FONT_BADGE,
@@ -312,7 +338,21 @@ class HomeScreen(ttk.Frame):
         left_panel.pack(side="left", fill="both", expand=False)
 
         self.dial = OmnitrixDial(left_panel, size=280)
-        self.dial.pack(pady=10)
+        self.dial.pack(pady=5)
+
+        # Omnitrix Live Timekeeper Display
+        self.lbl_timekeeper = tk.Label(
+            left_panel,
+            text="--:--:--",
+            bg=BG_PANEL,
+            fg=OMNI_GREEN_GLOW,
+            font=("Consolas", 12, "bold"),
+            padx=10,
+            pady=3,
+            relief="ridge",
+            bd=1,
+        )
+        self.lbl_timekeeper.pack(fill="x", pady=(2, 4))
 
         # Dial hint
         dial_note = ttk.Label(
@@ -321,7 +361,16 @@ class HomeScreen(ttk.Frame):
             style="Muted.TLabel",
             font=FONT_BADGE,
         )
-        dial_note.pack(pady=(0, 5))
+        dial_note.pack(pady=(0, 4))
+
+        if self.on_open_watchface:
+            self.btn_open_wf = ttk.Button(
+                left_panel,
+                text="🧬 WATCH FACE & ALIENS",
+                style="Omni.TButton",
+                command=self.on_open_watchface,
+            )
+            self.btn_open_wf.pack(fill="x", pady=(2, 0))
 
         # Right panel: Status cards & controls
         right_panel = ttk.Frame(body, style="TFrame")
@@ -382,7 +431,7 @@ class HomeScreen(ttk.Frame):
             btn_grid,
             text="1. SCAN BLE",
             style="Omni.TButton",
-            command=self.on_scan,
+            command=self._wrap_sound(self.on_scan),
         )
         self.btn_scan.grid(row=0, column=0, padx=4, pady=4, sticky="ew")
 
@@ -390,7 +439,7 @@ class HomeScreen(ttk.Frame):
             btn_grid,
             text="2. SELECT DEVICE",
             style="Omni.TButton",
-            command=self.on_open_picker,
+            command=self._wrap_sound(self.on_open_picker),
         )
         self.btn_pick.grid(row=0, column=1, padx=4, pady=4, sticky="ew")
 
@@ -398,7 +447,7 @@ class HomeScreen(ttk.Frame):
             btn_grid,
             text="3. CONNECT",
             style="Omni.TButton",
-            command=self.on_connect,
+            command=self._wrap_sound(self.on_connect),
         )
         self.btn_connect.grid(row=1, column=0, padx=4, pady=4, sticky="ew")
 
@@ -406,7 +455,7 @@ class HomeScreen(ttk.Frame):
             btn_grid,
             text="4. INSPECT GATT",
             style="Omni.TButton",
-            command=self.on_inspect,
+            command=self._wrap_sound(self.on_inspect),
         )
         self.btn_inspect.grid(row=1, column=1, padx=4, pady=4, sticky="ew")
 
@@ -414,7 +463,7 @@ class HomeScreen(ttk.Frame):
             btn_grid,
             text="DISCONNECT",
             style="Danger.TButton",
-            command=self.on_disconnect,
+            command=self._wrap_sound(self.on_disconnect),
         )
         self.btn_disconnect.grid(row=2, column=0, columnspan=2, padx=4, pady=(8, 4), sticky="ew")
 
@@ -480,6 +529,8 @@ class HomeScreen(ttk.Frame):
         self.dial.tick_animation()
         self._wave_index = (self._wave_index + 1) % len(self._waveforms)
         self.lbl_matrix_monitor.configure(text=self._waveforms[self._wave_index])
+        now = datetime.datetime.now()
+        self.lbl_timekeeper.configure(text=f"GALVAN TIME // {now.strftime('%H:%M:%S')}")
 
     def set_device_info(self, device: Optional[DeviceSummary]) -> None:
         """Update selected device display."""
@@ -490,6 +541,21 @@ class HomeScreen(ttk.Frame):
         else:
             self.lbl_device_name.configure(text="No peripheral selected")
             self.lbl_device_addr.configure(text="MAC: N/A | RSSI: N/A")
+
+    def _wrap_sound(self, callback: Callable[[], None]) -> Callable[[], None]:
+        """Wrap an action callback with a light futuristic interaction sound."""
+        def wrapper() -> None:
+            sound_player.play_beep()
+            callback()
+        return wrapper
+
+    def _toggle_audio(self) -> None:
+        """Toggle UI sound effects on or off."""
+        is_on = sound_player.toggle()
+        self.btn_sound.config(
+            text="🔊 AUDIO: ON" if is_on else "🔇 AUDIO: OFF",
+            fg=OMNI_GREEN if is_on else TEXT_MUTED,
+        )
 
     def set_status(self, text: str, state: SessionState) -> None:
         """Update status line and dial."""

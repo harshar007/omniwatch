@@ -15,6 +15,7 @@ from omnitrix_watch.services.device_session import DeviceSession, SessionEvent, 
 from omnitrix_watch.ui.screens.device_details import DeviceDetailsScreen
 from omnitrix_watch.ui.screens.device_picker import DevicePickerScreen
 from omnitrix_watch.ui.screens.home import HomeScreen
+from omnitrix_watch.ui.screens.watchface import WatchFaceScreen
 from omnitrix_watch.ui.theme import apply_theme
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ class OmnitrixApp:
         self.notebook.pack(fill="both", expand=True)
 
         # Screen instances
+        self.screen_watchface = WatchFaceScreen(self.notebook)
         self.screen_home = HomeScreen(
             self.notebook,
             on_scan=self._action_start_scan,
@@ -50,6 +52,7 @@ class OmnitrixApp:
             on_inspect=self._action_inspect,
             on_open_picker=lambda: self.notebook.select(self.screen_picker),
             on_open_inventory=lambda: self.notebook.select(self.screen_details),
+            on_open_watchface=lambda: self.notebook.select(self.screen_watchface),
         )
         self.screen_picker = DevicePickerScreen(
             self.notebook,
@@ -64,6 +67,7 @@ class OmnitrixApp:
         )
 
         self.notebook.add(self.screen_home, text="  DIAL DASHBOARD  ")
+        self.notebook.add(self.screen_watchface, text="  WATCH FACE (ALIENS & TIME)  ")
         self.notebook.add(self.screen_picker, text="  BLE SCANNER  ")
         self.notebook.add(self.screen_details, text="  GATT INVENTORY  ")
 
@@ -112,6 +116,7 @@ class OmnitrixApp:
     def _schedule_dial_tick(self) -> None:
         """Advance dial rotation animation frame."""
         self.screen_home.tick_animation()
+        self.screen_watchface.tick_animation()
         self.root.after(60, self._schedule_dial_tick)
 
     def _process_session_events(self) -> None:

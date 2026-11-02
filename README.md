@@ -17,12 +17,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-00ff55?style=for-the-badge&labelColor=080c0a)](LICENSE)
 [![Safety: Zero-Bricking](https://img.shields.io/badge/Safety-Read--Only%20GATT-00ff55?style=for-the-badge&logo=shield&logoColor=white&labelColor=080c0a)](#-safety-first-the-four-prime-directives)
 [![Platform: Win/Linux](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-00ff55?style=for-the-badge&labelColor=080c0a)](#-system-prerequisites)
-[![Tests Passing](https://img.shields.io/badge/Tests-7%20Passed-00ff55?style=for-the-badge&logo=pytest&logoColor=white&labelColor=080c0a)](#-testing-suite)
+[![Tests Passing](https://img.shields.io/badge/Tests-14%20Passed-00ff55?style=for-the-badge&logo=pytest&logoColor=white&labelColor=080c0a)](#-testing-suite)
 [![Contributions Welcome](https://img.shields.io/badge/PRs-Welcome-00ff55?style=for-the-badge&labelColor=080c0a)](CONTRIBUTING.md)
 
-**A Galvan-grade research companion and Ben 10 / Omnitrix-themed desktop interface for exploring the Redmi Watch Move over Bluetooth Low Energy (BLE).**
+**A Galvan-grade research companion and Ben 10 / Omnitrix watch face platform built exclusively for the Redmi Watch Move 2 over Bluetooth Low Energy (BLE).**
 
-[Features](#-key-features) • [Quick Start](#-quick-start) • [The 7-Phase Process](#-the-7-phase-research-process) • [Architecture](#-system-architecture) • [Open Source Ecosystem](#-open-source-files--governance) • [Safety Directives](#-safety-first-the-four-prime-directives)
+[Features](#-key-features) • [Watch Face & Aliens](#-omnitrix-on-watch-theme--alien-dna-matrix) • [Quick Start](#-quick-start) • [The 7-Phase Process](#-the-7-phase-research-process) • [Architecture](#-system-architecture) • [Safety Directives](#-safety-first-the-four-prime-directives)
 
 </div>
 
@@ -49,9 +49,22 @@
 
 ## ⚡ Executive Summary
 
-**Omnitrix Watch** transforms reverse-engineering and companion device exploration into a secure, cyberpunk-inspired visual experience. Built to interface with the **Redmi Watch Move**, it bridges native host Bluetooth controllers with a responsive Tkinter GUI styled after Azmuth’s iconic alien DNA matrix.
+**Omnitrix Watch** is an open-source research and watch face customization platform built exclusively for the **Redmi Watch Move 2**. It bridges native host Bluetooth controllers with a responsive Tkinter GUI styled after Azmuth’s iconic alien DNA matrix, enabling safe BLE GATT inspection and watch face bundle generation.
 
-Unlike arbitrary packet injection scripts, this repository implements a strictly verified, **non-destructive read-only GATT discovery protocol**. You can safely audit nearby Bluetooth peripherals, enumerate manufacturer and Bluetooth SIG services, inspect telemetry characteristics, and export sanitized Markdown reports without risking bricking your smartwatch.
+The project combines two core capabilities:
+1. **Device Auditing & Inspection:** Non-destructive read-only BLE scanner and GATT inspector that safely interrogates the Redmi Watch Move 2 without risking firmware corruption or bricking.
+2. **Omnitrix Watch Face Engine:** An on-watch theme architecture featuring a live Galvanic timekeeper (`HH:MM:SS`), interactive Alien DNA Matrix (all 10 original aliens), and exportable watch face manifests ready for compilation into `.bin` / `.zip` format.
+
+---
+
+## 🧬 Omnitrix On-Watch Theme & Alien DNA Matrix
+
+The desktop application includes a dedicated **Watch Face & Alien DNA Builder** configured specifically for the **Redmi Watch Move 2**'s 1.85-inch AMOLED display (390 x 450 resolution):
+
+- ⏱️ **Live Galvanic Timekeeper:** Glowing digital and analog clock with 12h/24h toggle, date stamp, and running seconds indicator.
+- 👽 **10 Classic Alien DNA Profiles:** Select and preview alien forms including **Heatblast**, **Diamondhead**, **XLR8**, **Four Arms**, **Grey Matter**, **Upgrade**, **Ripjaws**, **Ghostfreak**, **Stinkfly**, and **Cannonbolt** with their signature color accents and abilities.
+- 📦 **One-Click Bundle Export:** Generates layout coordinates, manifest JSON, and asset sheets formatted for compilation with EasyFace / Mi Create or sideloading via Gadgetbridge.
+- 📖 **Full Technical Architecture:** See [docs/watchface-roadmap.md](docs/watchface-roadmap.md) for the complete hardware specifications, coordinate map, and deployment paths.
 
 ---
 
@@ -215,7 +228,7 @@ graph TD
 
     subgraph Hardware["Physical Peripherals"]
         J["Host Bluetooth 4.0+ Adapter"]
-        K["Redmi Watch Move (GATT Server)"]
+        K["Redmi Watch Move 2 (GATT Server)"]
     end
 
     UI_Thread -->|User Actions| Q1

@@ -5,8 +5,8 @@ from omnitrix_watch.models.device import CharacteristicSummary, DeviceSummary
 
 def test_device_summary_sanitized_address() -> None:
     """Verify MAC addresses are properly masked to protect user privacy."""
-    dev = DeviceSummary(address="AA:BB:CC:DD:EE:FF", name="Redmi Watch Move", rssi=-60)
-    assert dev.display_name == "Redmi Watch Move"
+    dev = DeviceSummary(address="AA:BB:CC:DD:EE:FF", name="Redmi Watch Move 2", rssi=-60)
+    assert dev.display_name == "Redmi Watch Move 2"
     assert dev.sanitized_address == "AA:BB:**:**:**:FF"
 
 

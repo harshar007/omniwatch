@@ -33,8 +33,8 @@ def test_gatt_inventory_markdown_format() -> None:
     ]
 
     inventory = GattInventory(
-        device_name="Redmi Watch Move",
-        device_model="Redmi Watch Move",
+        device_name="Redmi Watch Move 2",
+        device_model="Redmi Watch Move 2",
         timestamp="2026-11-02T12:00:00Z",
         characteristics=chars,
     )
@@ -43,7 +43,7 @@ def test_gatt_inventory_markdown_format() -> None:
 
     # Check headers and markdown formatting
     assert "# GATT Service & Characteristic Inventory" in md
-    assert "Redmi Watch Move" in md
+    assert "Redmi Watch Move 2" in md
     assert "| `0000180a-0000-1000-8000-00805f9b34fb` | Device Information | `00002a24-0000-1000-8000-00805f9b34fb` | Model Number String | read | Yes | `M2345W1` |" in md
     assert "*Not readable*" in md
     assert "Read error: ATT_ERR_INSUFFICIENT_AUTHENTICATION" in md

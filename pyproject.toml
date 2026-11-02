@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "omnitrix-watch"
 version = "0.1.0"
-description = "A research-first companion tool and Omnitrix-themed UI prototype for the Redmi Watch Move"
+description = "A research companion and Omnitrix watch face platform for the Redmi Watch Move 2"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
