@@ -1,0 +1,24 @@
+# Omnitrix Watch Configuration Template
+# Copy this file to config/app.toml to customize local runtime settings.
+
+[ble]
+# Default scanning duration in seconds
+scan_duration = 5.0
+
+# Optional filter substring (case-insensitive) for discovered device names
+# e.g., "Redmi", "Watch"
+name_filter = ""
+
+# Maximum timeout when attempting connection in seconds
+connect_timeout = 10.0
+
+[ui]
+# Theme: 'omnitrix_classic' (green/black) or 'omnitrix_reboot'
+theme = "omnitrix_classic"
+window_width = 820
+window_height = 680
+
+[logging]
+level = "INFO"
+log_to_file = true
+log_file = "logs/omnitrix_watch.log"
