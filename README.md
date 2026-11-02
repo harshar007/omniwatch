@@ -87,6 +87,19 @@ Embedded reverse engineering carries inherent hardware risks. This repository en
 
 ---
 
+### 🖱️ One-Click Experience (No Setup Required!)
+
+We made running and distributing Omnitrix Watch effortless for anyone:
+
+1. **One-Click Launch:** Simply double-click **`Launch-Omnitrix.bat`** in File Explorer!
+   - Automatically detects Python, activates `.venv`, verifies dependencies, and boots the Omnitrix GUI.
+2. **One-Click Desktop Shortcut:** Double-click **`Create-Desktop-Shortcut.bat`**!
+   - Automatically drops an `Omnitrix Watch` icon onto your Windows Desktop.
+3. **Standalone Portable Release (Zero Python Installed):**
+   - Download `OmnitrixWatch-v0.1.0-windows-x64.zip` from [Releases](https://github.com/), extract it, and double-click **`Run-Omnitrix.bat`**!
+
+---
+
 ### 💻 Fast Virtual Environment Setup (PowerShell)
 
 Activate the project environment in one command:
