@@ -26,25 +26,52 @@ def compute_sha256(file_path: Path) -> str:
     return sha256.hexdigest()
 
 
+def find_pyinstaller_cmd() -> list[str]:
+    """Find pyinstaller command as a list of arguments."""
+    # 1. Prefer running as module via the current python interpreter
+    try:
+        res = subprocess.run(
+            [sys.executable, "-m", "PyInstaller", "--version"],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode == 0:
+            return [sys.executable, "-m", "PyInstaller"]
+    except Exception:
+        pass
+
+    # 2. Check shutil.which
+    which_pyi = shutil.which("pyinstaller")
+    if which_pyi:
+        return [which_pyi]
+
+    # 3. Check known Windows paths relative to current Python and project
+    possible_paths = [
+        PROJECT_ROOT / ".venv" / "Scripts" / "pyinstaller.exe",
+        Path(sys.executable).parent / "Scripts" / "pyinstaller.exe",
+        Path(sys.executable).parent / "pyinstaller.exe",
+    ]
+    for p in possible_paths:
+        if p.is_file():
+            return [str(p)]
+
+    raise FileNotFoundError("PyInstaller not found. Run: pip install pyinstaller")
+
+
 def build_single_exe() -> Path:
     """Build single standalone .exe file using PyInstaller."""
     print("=" * 65)
     print(f"BUILDING SINGLE-FILE STANDALONE EXECUTABLE (v{VERSION})")
     print("=" * 65)
 
-    pyinstaller_exe = PROJECT_ROOT / ".venv" / "Scripts" / "pyinstaller.exe"
-    if not pyinstaller_exe.exists():
-        pyinstaller_exe = Path(sys.executable).parent / "pyinstaller.exe"
-
-    if not pyinstaller_exe.exists():
-        raise FileNotFoundError("PyInstaller not found. Run: pip install pyinstaller")
+    pyinstaller_cmd = find_pyinstaller_cmd()
 
     ico_path = PROJECT_ROOT / "assets" / "omnitrix.ico"
     assets_dir = PROJECT_ROOT / "assets"
 
     # Command arguments for PyInstaller single-file build
     cmd = [
-        str(pyinstaller_exe),
+        *pyinstaller_cmd,
         "--noconfirm",
         "--clean",
         "--name",
