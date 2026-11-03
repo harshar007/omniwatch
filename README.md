@@ -139,6 +139,20 @@ The built-in Alien DNA Matrix gives you direct access to the 10 original Galvani
 
 ## 🎨 High-Voltage Features
 
+### 0. ⚡ Wearable Omnitrix Simulator (Inspired by Andrej Vujic's Alien Watch)
+- **4 Iconic Generations:** Instant switching between **Prototype** (Classic 2005), **Recalibrated** (Alien Force / Ultimatrix), **Omniverse**, and **Albedo** (Crimson Galvanic Core).
+- **Realistic Smartwatch Chassis on Wrist:** Curved smartwatch bezel with metallic screws, silicone ribbed straps, and clickable side crown button.
+- **Interactive 3D Pop-Up Core:** Core physically elevates with shaded mechanical cylinder depth and pop-up pneumatic latch sound!
+- **Tactile Rotating Bezel:** Rotate with mouse scroll wheel, mouse drag physics, arrow keys (`Left`/`Right` or `A`/`D`), or on-screen touch buttons.
+- **18-Alien DNA Roster:** Full vector silhouettes for all 10 Original Series aliens plus 8 unlockable favorites (Wildmutt, Swampfire, Humungousaur, Big Chill, Echo Echo, Chromastone, Way Big, and Alien X).
+- **Hero Transformation Shockwave:** Click / slam the popped core down to trigger full-screen blinding energy flash, particle shockwave, and alien transformation surge!
+- **Transformed Hero HUD:** Interactive chest badge (click to revert), depleting circular energy ring, live 5-axis stat bars (Strength, Speed, Defense, Energy, Intellect), and alien battle cry quote!
+- **Timeout & Red Cooldown:** 5-second emergency warning beeps followed by red recharge mode with circular progress gauge. Double-click the dial for instant quick recharge!
+- **Master Control (Code: `L, R, L, R, L, R, L, R`):** Infinite transformation time, zero cooldown, and instant on-the-fly alien morphing while already transformed!
+- **Self-Destruct Mode (Code: `L, R, L, L, L, R, L, L`):** Warning siren klaxon, flashing danger faceplate, countdown timer (00:30), and abort disarm!
+- **Extraterrestrial DNA Scanner:** 360° rotating amber radar beam locking onto extraterrestrial DNA signatures.
+- **One-Click Launcher:** Double-click [`Launch-Simulator.bat`](Launch-Simulator.bat) to launch the simulator directly!
+
 ### 1. 🧭 Omnitrix Dial Dashboard
 - **Breathing Neon Aura:** Mathematical sin-wave pulse (`#00ff55` / `#70ff94`) giving the dial a living energy glow.
 - **Azimuth Degree Markers:** Aerospace-grade dial calibrations (`000°`, `090°`, `180°`, `270°`) with alien crosshairs.
@@ -190,10 +204,13 @@ The built-in Alien DNA Matrix gives you direct access to the 10 original Galvani
 ### 🖱️ Single-Click Windows Launchers (Zero Setup Required!)
 
 ```powershell
-# 1. Double-click the one-click launcher
+# 1. Direct one-click launcher for the Omnitrix Simulator
+.\Launch-Simulator.bat
+
+# 2. Complete companion OS & research suite launcher
 .\Launch-Omnitrix.bat
 
-# 2. Or create a shortcut directly on your Windows Desktop
+# 3. Or create an icon shortcut directly on your Windows Desktop
 .\Create-Desktop-Shortcut.bat
 ```
 
@@ -206,7 +223,7 @@ The built-in Alien DNA Matrix gives you direct access to the 10 original Galvani
 # Upgrade pip and install dependencies
 pip install -e ".[dev]"
 
-# Launch the Omnitrix Companion UI
+# Launch the Omnitrix Simulator UI
 python -m omnitrix_watch.main
 ```
 
@@ -214,7 +231,7 @@ python -m omnitrix_watch.main
 
 ## 🧪 Automated Testing Suite
 
-All 18 automated unit tests run in less than **0.80 seconds** without requiring a physical watch:
+All 22 automated unit tests run in less than **1.5 seconds** without requiring a physical watch:
 
 ```powershell
 pytest -v
@@ -223,6 +240,14 @@ pytest -v
 <div align="center">
 
 | Test Suite | Focus Area | Status |
+|---|---|:---:|
+| [`test_simulator.py`](tests/test_simulator.py) | **Omnitrix Simulator Engine, Bezel Kinematics & Secret Codes** | `🟢 PASS` |
+| [`test_watchface.py`](tests/test_watchface.py) | Alien DNA Roster (10 Default, 18 Extended) & Watch Face Config | `🟢 PASS` |
+| [`test_sound.py`](tests/test_sound.py) | 13 Synthesized Audio Waves (< 145 KB Zero-Dependency Engine) | `🟢 PASS` |
+| [`test_config.py`](tests/test_config.py) | TOML App Configuration Parsing & Defaults | `🟢 PASS` |
+| [`test_device_models.py`](tests/test_device_models.py) | BLE Peripheral Summary Models & MAC Anonymization | `🟢 PASS` |
+| [`test_gatt_inventory_format.py`](tests/test_gatt_inventory_format.py) | Markdown GATT Telemetry Cartridge Formatting | `🟢 PASS` |
+| [`test_build_release.py`](tests/test_build_release.py) | PyInstaller Binary Packaging Manifest Verification | `🟢 PASS` |
 |---|---|:---:|
 | `test_sound.py` | Audio synthesis, mute toggling, async playback | 🟢 **4 Passed** |
 | `test_watchface.py` | 10 Alien roster lookups, manifest generator, 390x450 layout | 🟢 **5 Passed** |

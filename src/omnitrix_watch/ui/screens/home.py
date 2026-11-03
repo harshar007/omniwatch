@@ -257,6 +257,7 @@ class HomeScreen(ttk.Frame):
         on_open_picker: Callable[[], None],
         on_open_inventory: Callable[[], None],
         on_open_watchface: Optional[Callable[[], None]] = None,
+        on_open_simulator: Optional[Callable[[], None]] = None,
     ) -> None:
         super().__init__(parent, style="TFrame")
         self.on_scan = on_scan
@@ -266,6 +267,7 @@ class HomeScreen(ttk.Frame):
         self.on_open_picker = on_open_picker
         self.on_open_inventory = on_open_inventory
         self.on_open_watchface = on_open_watchface
+        self.on_open_simulator = on_open_simulator
 
         self._build_ui()
 
@@ -362,6 +364,22 @@ class HomeScreen(ttk.Frame):
             font=FONT_BADGE,
         )
         dial_note.pack(pady=(0, 4))
+
+        if self.on_open_simulator:
+            self.btn_open_sim = tk.Button(
+                left_panel,
+                text="⚡ OMNITRIX SIMULATOR",
+                bg="#0c3d18",
+                fg=OMNI_GREEN_GLOW,
+                activebackground=OMNI_GREEN,
+                activeforeground="#000000",
+                font=("Consolas", 10, "bold"),
+                relief="raised",
+                bd=2,
+                cursor="hand2",
+                command=self.on_open_simulator,
+            )
+            self.btn_open_sim.pack(fill="x", pady=(4, 2))
 
         if self.on_open_watchface:
             self.btn_open_wf = ttk.Button(

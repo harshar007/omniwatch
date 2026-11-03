@@ -199,6 +199,206 @@ DEFAULT_ALIEN_ROSTER: List[AlienProfile] = [
     ),
 ]
 
+EXTENDED_ALIEN_ROSTER: List[AlienProfile] = [
+    AlienProfile(
+        id=11,
+        codename="ALIEN-11",
+        name="Wildmutt",
+        species="Vulpimancer",
+        homeworld="Vulpin",
+        primary_ability="Thermographic & Ultrasonic Senses",
+        signature_color="#ff8800",
+        dna_code="VULP-1120-DNA",
+        ascii_art=(
+            "   /\\__ /\\   \n"
+            "  (  o.o  )  \n"
+            "   > ^ <     \n"
+            "  /       \\  "
+        ),
+        description="Feral apex predator utilizing quill projection and thermographic perception.",
+    ),
+    AlienProfile(
+        id=12,
+        codename="ALIEN-12",
+        name="Swampfire",
+        species="Methanosian",
+        homeworld="Methanos",
+        primary_ability="Methane Pyrokinesis & Chlorokinesis",
+        signature_color="#00dd55",
+        dna_code="METH-3342-DNA",
+        ascii_art=(
+            "   (✿_✿)   \n"
+            "  /{ 🔥 }\\ \n"
+            "  / |🌿| \\ \n"
+            "    |  |   "
+        ),
+        description="Living plant/methane hybrid capable of generating ignited gas blasts and plant control.",
+    ),
+    AlienProfile(
+        id=13,
+        codename="ALIEN-13",
+        name="Humungousaur",
+        species="Vaxasaurian",
+        homeworld="Terradino",
+        primary_ability="Dynamic Size Alteration & Titan Strength",
+        signature_color="#cc7722",
+        dna_code="VAXA-9910-DNA",
+        ascii_art=(
+            "  /🦖🦖\\   \n"
+            " ( ◣_◢ )  \n"
+            " /======\\  \n"
+            "/ |    | \\ "
+        ),
+        description="Colossal dinosaurian titan capable of growing up to 60 feet in height with seismic power.",
+    ),
+    AlienProfile(
+        id=14,
+        codename="ALIEN-14",
+        name="Big Chill",
+        species="Necrofriggian",
+        homeworld="Kylmyys",
+        primary_ability="Absolute-Zero Cryokinesis & Cryo-Phasing",
+        signature_color="#00bbff",
+        dna_code="NECRO-5501-DNA",
+        ascii_art=(
+            "  /\\    /\\ \n"
+            " (  ❄️  ❄️ ) \n"
+            "  \\ |  | / \n"
+            "   \\/  \\/  "
+        ),
+        description="Ghostly moth lifeform able to freeze solid objects by phasing through them at absolute zero.",
+    ),
+    AlienProfile(
+        id=15,
+        codename="ALIEN-15",
+        name="Echo Echo",
+        species="Sonorosian",
+        homeworld="Sonorosia",
+        primary_ability="Ultrasonic Soundwaves & Self-Replication",
+        signature_color="#e0e0e0",
+        dna_code="SONO-7711-DNA",
+        ascii_art=(
+            "  [🔊 🔊]  \n"
+            "  (  ••  ) \n"
+            "  /  ||  \\ \n"
+            "  \\ (||) / "
+        ),
+        description="Living sound amplifier entity inside a silicon containment suit that duplicates indefinitely.",
+    ),
+    AlienProfile(
+        id=16,
+        codename="ALIEN-16",
+        name="Chromastone",
+        species="Crystalsapien",
+        homeworld="Petropia",
+        primary_ability="Energy Absorption & Ultraviolet Laser Beams",
+        signature_color="#dd44ff",
+        dna_code="CRYST-8822-DNA",
+        ascii_art=(
+            "    /\\     \n"
+            "   / ✨\\   \n"
+            "  | [oo] | \n"
+            "   \\ -- /  \n"
+            "    `--'   "
+        ),
+        description="Silicon-crystal conductor that absorbs electromagnetic radiation and channels ultraviolet blasts.",
+    ),
+    AlienProfile(
+        id=17,
+        codename="ALIEN-17",
+        name="Way Big",
+        species="To'kustar",
+        homeworld="Cosmic Storms",
+        primary_ability="Cosmic Energy Beams & Skyscraper Might",
+        signature_color="#ff3344",
+        dna_code="TOKU-0099-DNA",
+        ascii_art=(
+            "     |     \n"
+            "   (•_•)   \n"
+            "  /==|==\\  \n"
+            " /   |   \\ "
+        ),
+        description="Monumental cosmic colossus born in interstellar storms, towering hundreds of feet high.",
+    ),
+    AlienProfile(
+        id=18,
+        codename="ALIEN-18",
+        name="Alien X",
+        species="Celestialsapien",
+        homeworld="Forge of Creation",
+        primary_ability="Omnipotent Reality Warping & Spacetime Control",
+        signature_color="#8899bb",
+        dna_code="CELEST-0000-DNA",
+        ascii_art=(
+            "   /\\||/\\  \n"
+            "  ( ★  ★ ) \n"
+            "  /  ✨  \\ \n"
+            "   `----'  "
+        ),
+        description="All-powerful cosmic being of the Forge of Creation capable of warping reality at will.",
+    ),
+]
+
+
+ALIEN_QUOTES: dict[int, str] = {
+    1: "Let's turn up the heat!",
+    2: "Time to crystallize this situation!",
+    3: "Can't catch what you can't see!",
+    4: "Four arms are better than two!",
+    5: "A battle of wits? You are utterly unarmed!",
+    6: "Time for a technological upgrade!",
+    7: "Let's see how well you can swim!",
+    8: "Boo! Did I frighten you?",
+    9: "Incoming aerial slime bombardment!",
+    10: "Let's roll!",
+    11: "*Feral Vulpimancer hunter roar!*",
+    12: "Smells like victory!",
+    13: "Humungousaur! Time to smash!",
+    14: "Chill out! Sub-zero freeze!",
+    15: "Echo Echo! Hear the noise!",
+    16: "Energy absorbed and redirected!",
+    17: "Way Big! Stand down!",
+    18: "Motion carried! Reality altered.",
+}
+
+ALIEN_STATS: dict[int, dict[str, int]] = {
+    1: {"Strength": 65, "Speed": 70, "Defense": 75, "Energy": 95, "Intellect": 60},
+    2: {"Strength": 80, "Speed": 50, "Defense": 95, "Energy": 70, "Intellect": 65},
+    3: {"Strength": 45, "Speed": 100, "Defense": 55, "Energy": 60, "Intellect": 70},
+    4: {"Strength": 98, "Speed": 55, "Defense": 90, "Energy": 40, "Intellect": 50},
+    5: {"Strength": 20, "Speed": 40, "Defense": 30, "Energy": 50, "Intellect": 100},
+    6: {"Strength": 60, "Speed": 65, "Defense": 85, "Energy": 90, "Intellect": 88},
+    7: {"Strength": 75, "Speed": 80, "Defense": 65, "Energy": 50, "Intellect": 60},
+    8: {"Strength": 50, "Speed": 70, "Defense": 80, "Energy": 85, "Intellect": 75},
+    9: {"Strength": 55, "Speed": 85, "Defense": 50, "Energy": 75, "Intellect": 60},
+    10: {"Strength": 85, "Speed": 80, "Defense": 100, "Energy": 45, "Intellect": 55},
+    11: {"Strength": 78, "Speed": 82, "Defense": 70, "Energy": 35, "Intellect": 45},
+    12: {"Strength": 82, "Speed": 65, "Defense": 85, "Energy": 90, "Intellect": 70},
+    13: {"Strength": 100, "Speed": 45, "Defense": 95, "Energy": 40, "Intellect": 50},
+    14: {"Strength": 65, "Speed": 80, "Defense": 80, "Energy": 92, "Intellect": 75},
+    15: {"Strength": 40, "Speed": 65, "Defense": 60, "Energy": 95, "Intellect": 70},
+    16: {"Strength": 85, "Speed": 65, "Defense": 90, "Energy": 100, "Intellect": 70},
+    17: {"Strength": 100, "Speed": 70, "Defense": 95, "Energy": 98, "Intellect": 65},
+    18: {"Strength": 100, "Speed": 100, "Defense": 100, "Energy": 100, "Intellect": 100},
+}
+
+
+def get_simulator_aliens(include_unlocked: bool = True) -> List[AlienProfile]:
+    """Retrieve aliens for the Omnitrix Simulator (10 classic or all 18 unlocked)."""
+    if include_unlocked:
+        return list(DEFAULT_ALIEN_ROSTER) + list(EXTENDED_ALIEN_ROSTER)
+    return list(DEFAULT_ALIEN_ROSTER)
+
+
+def get_alien_quote(alien_id: int) -> str:
+    """Get the heroic battle cry/quote for an alien."""
+    return ALIEN_QUOTES.get(alien_id, "It's hero time!")
+
+
+def get_alien_stats(alien_id: int) -> dict[str, int]:
+    """Get power stats radar dictionary for an alien."""
+    return ALIEN_STATS.get(alien_id, {"Strength": 50, "Speed": 50, "Defense": 50, "Energy": 50, "Intellect": 50})
+
 
 def get_all_aliens() -> List[AlienProfile]:
     """Retrieve the complete Omnitrix DNA roster."""

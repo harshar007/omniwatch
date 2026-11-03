@@ -115,6 +115,34 @@ class SoundManager:
         """Omnitrix low-charge / timeout / error warning buzz."""
         self.play("error")
 
+    def play_popup(self) -> None:
+        """Omnitrix core spring pop-up and mechanical latch."""
+        self.play("popup")
+
+    def play_transform(self) -> None:
+        """Omnitrix slam & alien transformation surge."""
+        self.play("transform")
+
+    def play_recharge(self) -> None:
+        """Omnitrix galvanic recharge completed chime."""
+        self.play("recharge")
+
+    def play_timeout(self) -> None:
+        """Omnitrix time-out warning alarm beeps."""
+        self.play("timeout")
+
+    def play_self_destruct(self) -> None:
+        """Omnitrix self-destruct emergency klaxon."""
+        self.play("self_destruct")
+
+    def play_dna_scan(self) -> None:
+        """Extraterrestrial DNA scan frequency sweep."""
+        self.play("dna_scan")
+
+    def play_master_control(self) -> None:
+        """Omnitrix master control authorization chime."""
+        self.play("master_control")
+
 
 # Global sound player instance
 sound_player = SoundManager()
