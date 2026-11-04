@@ -11,16 +11,21 @@ from typing import Callable, Optional
 from omnitrix_watch.models.device import DeviceSummary
 from omnitrix_watch.services.device_session import SessionState
 from omnitrix_watch.sound import sound_player
+from omnitrix_watch.ui.components.cards import CyberCard, SignalMeter, StatBadge
+from omnitrix_watch.ui.components.dial import OmnitrixDial
 from omnitrix_watch.ui.theme import (
     BG_DARK,
     BG_PANEL,
+    BG_SURFACE,
     BORDER_COLOR,
+    BORDER_BRIGHT,
     COLOR_ERROR,
     COLOR_WARNING,
     FONT_BADGE,
     FONT_BODY,
     FONT_DIAL,
     FONT_HEADING,
+    FONT_MONO,
     FONT_TITLE,
     OMNI_CORE_GLOW,
     OMNI_GREEN,
@@ -32,216 +37,8 @@ from omnitrix_watch.ui.theme import (
     TEXT_PRIMARY,
 )
 
-
-class OmnitrixDial(tk.Canvas):
-    """Custom Omnitrix circular dial drawn with vector shapes and state indicators."""
-
-    def __init__(self, parent: tk.Widget, size: int = 260, **kwargs) -> None:
-        super().__init__(
-            parent,
-            width=size,
-            height=size,
-            bg=BG_DARK,
-            highlightthickness=0,
-            **kwargs,
-        )
-        self.size = size
-        self.center = size / 2
-        self.radius = (size / 2) - 18
-        self.angle_offset = 0.0
-        self.radar_angle = 0.0
-        self.pulse_phase = 0.0
-        self.shockwave_radius = 0.0
-        self.is_animating = False
-        self.current_state = SessionState.IDLE
-        self.state_label = "STANDBY"
-        self.state_color = OMNI_GREEN
-        
-        # Interactive click
-        self.bind("<Button-1>", self._on_dial_click)
-        self.draw()
-
-    def _on_dial_click(self, _event: tk.Event) -> None:
-        """Trigger an expanding shockwave animation when user taps the dial."""
-        self.shockwave_radius = 20.0
-        sound_player.play_shockwave()
-        self.draw()
-
-    def update_state(self, state: SessionState) -> None:
-        """Update visual dial status based on session state."""
-        self.current_state = state
-        if state == SessionState.IDLE:
-            self.state_label = "READY"
-            self.state_color = OMNI_GREEN
-            self.is_animating = False
-        elif state == SessionState.SCANNING:
-            self.state_label = "SCANNING"
-            self.state_color = OMNI_GREEN_GLOW
-            self.is_animating = True
-            sound_player.play_radar_ping()
-        elif state == SessionState.CONNECTING:
-            self.state_label = "SYNCING"
-            self.state_color = COLOR_WARNING
-            self.is_animating = True
-        elif state == SessionState.CONNECTED:
-            self.state_label = "LINKED"
-            self.state_color = OMNI_GREEN_GLOW
-            self.is_animating = False
-            sound_player.play_alien_select()
-        elif state == SessionState.INSPECTING:
-            self.state_label = "INSPECT"
-            self.state_color = OMNI_GREEN
-            self.is_animating = True
-            sound_player.play_radar_ping()
-        elif state == SessionState.ERROR:
-            self.state_label = "FAULT"
-            self.state_color = COLOR_ERROR
-            self.is_animating = False
-            sound_player.play_error()
-        self.draw()
-
-    def tick_animation(self) -> None:
-        """Advance dial rotation and breathing pulse animation frame."""
-        self.pulse_phase = (self.pulse_phase + 0.08) % (2 * math.pi)
-
-        if self.shockwave_radius > 0:
-            self.shockwave_radius += 6.0
-            if self.shockwave_radius > self.radius * 1.3:
-                self.shockwave_radius = 0.0
-
-        if self.is_animating:
-            self.angle_offset = (self.angle_offset + 0.08) % (2 * math.pi)
-            self.radar_angle = (self.radar_angle + 0.12) % (2 * math.pi)
-        
-        self.draw()
-
-    def draw(self) -> None:
-        """Render all layers of the futuristic Omnitrix faceplate."""
-        self.delete("all")
-        cx, cy, r = self.center, self.center, self.radius
-
-        # 1. Cyber Targeting Reticle Corners ⌜ ⌝ ⌞ ⌟
-        corner_len = 16
-        bracket_pad = 12
-        b_left = cx - r - bracket_pad
-        b_right = cx + r + bracket_pad
-        b_top = cy - r - bracket_pad
-        b_bot = cy + r + bracket_pad
-
-        reticle_color = OMNI_GREEN_DARK
-        # Top-Left
-        self.create_line(b_left, b_top + corner_len, b_left, b_top, fill=reticle_color, width=2)
-        self.create_line(b_left, b_top, b_left + corner_len, b_top, fill=reticle_color, width=2)
-        # Top-Right
-        self.create_line(b_right - corner_len, b_top, b_right, b_top, fill=reticle_color, width=2)
-        self.create_line(b_right, b_top, b_right, b_top + corner_len, fill=reticle_color, width=2)
-        # Bottom-Left
-        self.create_line(b_left, b_bot - corner_len, b_left, b_bot, fill=reticle_color, width=2)
-        self.create_line(b_left, b_bot, b_left + corner_len, b_bot, fill=reticle_color, width=2)
-        # Bottom-Right
-        self.create_line(b_right - corner_len, b_bot, b_right, b_bot, fill=reticle_color, width=2)
-        self.create_line(b_right, b_bot, b_right, b_bot - corner_len, fill=reticle_color, width=2)
-
-        # 2. Breathing outer aura
-        pulse_alpha = 0.5 + 0.5 * math.sin(self.pulse_phase)
-        outer_glow_color = OMNI_GREEN_DIM if pulse_alpha > 0.5 else OMNI_GREEN_DARK
-
-        # Outer casing ring (dark titanium alloy motif)
-        self.create_oval(
-            cx - r, cy - r, cx + r, cy + r,
-            fill=BG_PANEL, outline=BORDER_COLOR, width=3
-        )
-
-        # Segmented Power Meter Arcs (12 o'clock, 3 o'clock, 6 o'clock, 9 o'clock)
-        for arc_start in [15, 105, 195, 285]:
-            self.create_arc(
-                cx - r + 4, cy - r + 4, cx + r - 4, cy + r - 4,
-                start=arc_start, extent=60, style="arc",
-                outline=outer_glow_color, width=3
-            )
-
-        # Concentric groove
-        self.create_oval(
-            cx - r + 8, cy - r + 8, cx + r - 8, cy + r - 8,
-            outline=OMNI_GREEN_DARK, width=2
-        )
-
-        # 3. Outer bezel tick marks & alien degree markers
-        num_notches = 24
-        for i in range(num_notches):
-            angle = (i * 2 * math.pi / num_notches) + self.angle_offset
-            outer_x = cx + (r - 2) * math.cos(angle)
-            outer_y = cy + (r - 2) * math.sin(angle)
-            inner_x = cx + (r - 10) * math.cos(angle)
-            inner_y = cy + (r - 10) * math.sin(angle)
-            tick_color = OMNI_GREEN if (i % 6 == 0) else (OMNI_GREEN_GLOW if (i % 3 == 0) else OMNI_GREEN_DARK)
-            self.create_line(outer_x, outer_y, inner_x, inner_y, fill=tick_color, width=2 if (i % 3 == 0) else 1)
-
-        # 4. Degree Labels
-        self.create_text(cx, cy - r + 16, text="000°", fill=TEXT_MUTED, font=FONT_BADGE)
-        self.create_text(cx + r - 16, cy, text="090°", fill=TEXT_MUTED, font=FONT_BADGE)
-        self.create_text(cx, cy + r - 16, text="180°", fill=TEXT_MUTED, font=FONT_BADGE)
-        self.create_text(cx - r + 16, cy, text="270°", fill=TEXT_MUTED, font=FONT_BADGE)
-
-        # 5. Inner bezel circle
-        core_r = r - 24
-        self.create_oval(
-            cx - core_r, cy - core_r, cx + core_r, cy + core_r,
-            fill="#051009", outline=self.state_color, width=2
-        )
-
-        # 6. Active Radar Sweep Line (When scanning or inspecting)
-        if self.is_animating:
-            sweep_x = cx + core_r * math.cos(self.radar_angle)
-            sweep_y = cy + core_r * math.sin(self.radar_angle)
-            self.create_line(cx, cy, sweep_x, sweep_y, fill=OMNI_CORE_GLOW, width=3)
-            # Fading trail
-            trail_angle = self.radar_angle - 0.25
-            trail_x = cx + core_r * math.cos(trail_angle)
-            trail_y = cy + core_r * math.sin(trail_angle)
-            self.create_line(cx, cy, trail_x, trail_y, fill=OMNI_GREEN_DIM, width=1)
-
-        # 7. Omnitrix Hourglass / Silhouette motif (two opposing triangles intersecting at center)
-        tri_size = core_r * 0.72
-        # Top triangle pointing down
-        top_pts = [
-            cx - tri_size, cy - tri_size,
-            cx + tri_size, cy - tri_size,
-            cx, cy,
-        ]
-        # Bottom triangle pointing up
-        bot_pts = [
-            cx - tri_size, cy + tri_size,
-            cx + tri_size, cy + tri_size,
-            cx, cy,
-        ]
-
-        glow_fill = OMNI_GREEN_GLOW if (pulse_alpha > 0.6 and not self.is_animating) else self.state_color
-        self.create_polygon(top_pts, fill=glow_fill, outline=OMNI_GREEN_DIM, width=2)
-        self.create_polygon(bot_pts, fill=glow_fill, outline=OMNI_GREEN_DIM, width=2)
-
-        # 8. Interactive Shockwave Ripple
-        if self.shockwave_radius > 0:
-            self.create_oval(
-                cx - self.shockwave_radius, cy - self.shockwave_radius,
-                cx + self.shockwave_radius, cy + self.shockwave_radius,
-                outline=OMNI_CORE_GLOW, width=2
-            )
-
-        # 9. Center core ring
-        center_core_r = 22
-        self.create_oval(
-            cx - center_core_r, cy - center_core_r, cx + center_core_r, cy + center_core_r,
-            fill=BG_DARK, outline=self.state_color, width=2
-        )
-
-        # 10. Status text in center core
-        self.create_text(
-            cx, cy,
-            text=self.state_label,
-            fill=self.state_color,
-            font=FONT_DIAL,
-        )
+# Re-export OmnitrixDial for backward compatibility
+__all__ = ["HomeScreen", "OmnitrixDial"]
 
 
 class HomeScreen(ttk.Frame):
@@ -273,20 +70,30 @@ class HomeScreen(ttk.Frame):
 
     def _build_ui(self) -> None:
         # Header banner
-        header_frame = ttk.Frame(self, style="TFrame")
-        header_frame.pack(fill="x", padx=20, pady=(15, 10))
+        header_frame = tk.Frame(self, bg=BG_DARK)
+        header_frame.pack(fill="x", padx=16, pady=(12, 8))
 
-        title = ttk.Label(
-            header_frame,
+        title_box = tk.Frame(header_frame, bg=BG_DARK)
+        title_box.pack(side="left")
+
+        tk.Label(
+            title_box,
             text="OMNITRIX RESEARCH PROTOCOL",
-            style="Header.Label",
+            bg=BG_DARK,
+            fg=OMNI_GREEN,
             font=FONT_TITLE,
-            foreground=OMNI_GREEN,
-        )
-        title.pack(side="left")
+        ).pack(anchor="w")
+
+        tk.Label(
+            title_box,
+            text="GALVAN PRIMARY TELEMETRY & ATTRIBUTE INSPECTOR",
+            bg=BG_DARK,
+            fg=TEXT_MUTED,
+            font=FONT_BADGE,
+        ).pack(anchor="w")
 
         # Security & Mode Badges
-        badge_frame = ttk.Frame(header_frame, style="TFrame")
+        badge_frame = tk.Frame(header_frame, bg=BG_DARK)
         badge_frame.pack(side="right")
 
         self.btn_sound = tk.Button(
@@ -304,7 +111,7 @@ class HomeScreen(ttk.Frame):
             cursor="hand2",
             command=self._toggle_audio,
         )
-        self.btn_sound.pack(side="right", padx=(5, 0))
+        self.btn_sound.pack(side="right", padx=(6, 0))
 
         mode_badge = tk.Label(
             badge_frame,
@@ -317,7 +124,7 @@ class HomeScreen(ttk.Frame):
             relief="solid",
             bd=1,
         )
-        mode_badge.pack(side="right", padx=(5, 0))
+        mode_badge.pack(side="right", padx=(6, 0))
 
         target_badge = tk.Label(
             badge_frame,
@@ -333,22 +140,26 @@ class HomeScreen(ttk.Frame):
         target_badge.pack(side="right")
 
         # Main content layout (Dial on left, Status & Controls on right)
-        body = ttk.Frame(self, style="TFrame")
-        body.pack(fill="both", expand=True, padx=20, pady=10)
+        body = tk.Frame(self, bg=BG_DARK)
+        body.pack(fill="both", expand=True, padx=16, pady=6)
 
-        left_panel = ttk.Frame(body, style="Panel.TFrame", padding=15)
-        left_panel.pack(side="left", fill="both", expand=False)
+        # LEFT COLUMN: Dial & Quick Launchers
+        left_col = tk.Frame(body, bg=BG_DARK)
+        left_col.pack(side="left", fill="both", expand=False)
 
-        self.dial = OmnitrixDial(left_panel, size=280)
-        self.dial.pack(pady=5)
+        card_dial = CyberCard(left_col, title="Omnitrix Core Dial", subtitle="Vector Reticle")
+        card_dial.pack(fill="both", expand=True)
+
+        self.dial = OmnitrixDial(card_dial.body, size=270)
+        self.dial.pack(pady=4)
 
         # Omnitrix Live Timekeeper Display
         self.lbl_timekeeper = tk.Label(
-            left_panel,
+            card_dial.body,
             text="--:--:--",
             bg=BG_PANEL,
             fg=OMNI_GREEN_GLOW,
-            font=("Consolas", 12, "bold"),
+            font=("Consolas", 11, "bold"),
             padx=10,
             pady=3,
             relief="ridge",
@@ -356,19 +167,10 @@ class HomeScreen(ttk.Frame):
         )
         self.lbl_timekeeper.pack(fill="x", pady=(2, 4))
 
-        # Dial hint
-        dial_note = ttk.Label(
-            left_panel,
-            text="NON-DESTRUCTIVE BLE MONITOR",
-            style="Muted.TLabel",
-            font=FONT_BADGE,
-        )
-        dial_note.pack(pady=(0, 4))
-
         if self.on_open_simulator:
             self.btn_open_sim = tk.Button(
-                left_panel,
-                text="⚡ OMNITRIX SIMULATOR",
+                card_dial.body,
+                text="⚡ LAUNCH 3D SIMULATOR",
                 bg="#0c3d18",
                 fg=OMNI_GREEN_GLOW,
                 activebackground=OMNI_GREEN,
@@ -383,75 +185,79 @@ class HomeScreen(ttk.Frame):
 
         if self.on_open_watchface:
             self.btn_open_wf = ttk.Button(
-                left_panel,
+                card_dial.body,
                 text="🧬 WATCH FACE & ALIENS",
                 style="Omni.TButton",
                 command=self.on_open_watchface,
             )
             self.btn_open_wf.pack(fill="x", pady=(2, 0))
 
-        # Right panel: Status cards & controls
-        right_panel = ttk.Frame(body, style="TFrame")
-        right_panel.pack(side="right", fill="both", expand=True, padx=(15, 0))
+        # RIGHT COLUMN: Device Target, Command Center, Console
+        right_col = tk.Frame(body, bg=BG_DARK)
+        right_col.pack(side="right", fill="both", expand=True, padx=(12, 0))
 
-        # Device card
-        dev_card = ttk.Frame(right_panel, style="Surface.TFrame", padding=12)
-        dev_card.pack(fill="x", pady=(0, 10))
+        # 1. TARGET DEVICE CARD
+        card_target = CyberCard(right_col, title="Target Peripheral Link", subtitle="GATT Endpoint")
+        card_target.pack(fill="x", pady=(0, 8))
 
-        card_title = ttk.Label(
-            dev_card,
-            text="TARGET DEVICE LINK",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        )
-        card_title.pack(anchor="w")
+        target_row = tk.Frame(card_target.body, bg=BG_PANEL)
+        target_row.pack(fill="x")
 
-        self.lbl_device_name = ttk.Label(
-            dev_card,
+        target_info = tk.Frame(target_row, bg=BG_PANEL)
+        target_info.pack(side="left", fill="both", expand=True)
+
+        self.lbl_device_name = tk.Label(
+            target_info,
             text="No peripheral selected",
-            foreground=TEXT_PRIMARY,
-            font=FONT_BODY,
+            bg=BG_PANEL,
+            fg=TEXT_PRIMARY,
+            font=("Consolas", 11, "bold"),
+            anchor="w",
         )
-        self.lbl_device_name.pack(anchor="w", pady=(4, 2))
+        self.lbl_device_name.pack(fill="x", pady=(0, 2))
 
-        self.lbl_device_addr = ttk.Label(
-            dev_card,
+        self.lbl_device_addr = tk.Label(
+            target_info,
             text="MAC: N/A | RSSI: N/A",
-            foreground=TEXT_MUTED,
-            font=FONT_BODY,
+            bg=BG_PANEL,
+            fg=TEXT_MUTED,
+            font=FONT_MONO,
+            anchor="w",
         )
-        self.lbl_device_addr.pack(anchor="w")
+        self.lbl_device_addr.pack(fill="x")
 
-        self.lbl_status = ttk.Label(
-            dev_card,
-            text="STATUS: Idle / Awaiting Command",
-            foreground=TEXT_MUTED,
-            font=FONT_BODY,
+        self.lbl_status = tk.Label(
+            target_info,
+            text="STATUS: Standby / Awaiting Scan",
+            bg=BG_PANEL,
+            fg=OMNI_GREEN,
+            font=FONT_BADGE,
+            anchor="w",
         )
-        self.lbl_status.pack(anchor="w", pady=(6, 0))
+        self.lbl_status.pack(fill="x", pady=(4, 0))
 
-        # Controls panel
-        controls_card = ttk.Frame(right_panel, style="Surface.TFrame", padding=12)
-        controls_card.pack(fill="x", pady=(0, 10))
+        # Signal meter on right of card
+        meter_box = tk.Frame(target_row, bg=BG_PANEL)
+        meter_box.pack(side="right", padx=(10, 0))
 
-        ctrl_title = ttk.Label(
-            controls_card,
-            text="SYSTEM ACTIONS",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        )
-        ctrl_title.pack(anchor="w", pady=(0, 10))
+        tk.Label(meter_box, text="SIGNAL", bg=BG_PANEL, fg=TEXT_MUTED, font=FONT_BADGE).pack()
+        self.signal_meter = SignalMeter(meter_box, width=46, height=18)
+        self.signal_meter.pack(pady=(2, 0))
 
-        btn_grid = ttk.Frame(controls_card, style="Surface.TFrame")
+        # 2. ACTIONS COMMAND CENTER CARD
+        card_actions = CyberCard(right_col, title="Protocol Operations", subtitle="Step-by-step Workflow")
+        card_actions.pack(fill="x", pady=(0, 8))
+
+        btn_grid = tk.Frame(card_actions.body, bg=BG_PANEL)
         btn_grid.pack(fill="x")
 
         self.btn_scan = ttk.Button(
             btn_grid,
-            text="1. SCAN BLE",
+            text="1. SCAN BLUETOOTH",
             style="Omni.TButton",
             command=self._wrap_sound(self.on_scan),
         )
-        self.btn_scan.grid(row=0, column=0, padx=4, pady=4, sticky="ew")
+        self.btn_scan.grid(row=0, column=0, padx=4, pady=3, sticky="ew")
 
         self.btn_pick = ttk.Button(
             btn_grid,
@@ -459,43 +265,41 @@ class HomeScreen(ttk.Frame):
             style="Omni.TButton",
             command=self._wrap_sound(self.on_open_picker),
         )
-        self.btn_pick.grid(row=0, column=1, padx=4, pady=4, sticky="ew")
+        self.btn_pick.grid(row=0, column=1, padx=4, pady=3, sticky="ew")
 
         self.btn_connect = ttk.Button(
             btn_grid,
-            text="3. CONNECT",
+            text="3. CONNECT GATT",
             style="Omni.TButton",
             command=self._wrap_sound(self.on_connect),
         )
-        self.btn_connect.grid(row=1, column=0, padx=4, pady=4, sticky="ew")
+        self.btn_connect.grid(row=1, column=0, padx=4, pady=3, sticky="ew")
 
         self.btn_inspect = ttk.Button(
             btn_grid,
-            text="4. INSPECT GATT",
+            text="4. MAP ATTRIBUTES",
             style="Omni.TButton",
             command=self._wrap_sound(self.on_inspect),
         )
-        self.btn_inspect.grid(row=1, column=1, padx=4, pady=4, sticky="ew")
+        self.btn_inspect.grid(row=1, column=1, padx=4, pady=3, sticky="ew")
 
         self.btn_disconnect = ttk.Button(
             btn_grid,
-            text="DISCONNECT",
+            text="DISCONNECT LINK",
             style="Danger.TButton",
             command=self._wrap_sound(self.on_disconnect),
         )
-        self.btn_disconnect.grid(row=2, column=0, columnspan=2, padx=4, pady=(8, 4), sticky="ew")
+        self.btn_disconnect.grid(row=2, column=0, columnspan=2, padx=4, pady=(6, 2), sticky="ew")
 
         btn_grid.columnconfigure(0, weight=1)
         btn_grid.columnconfigure(1, weight=1)
 
-        # Telemetry / Log console card
-        log_card = ttk.Frame(right_panel, style="Surface.TFrame", padding=10)
-        log_card.pack(fill="both", expand=True)
+        # 3. TELEMETRY ACTIVITY CONSOLE CARD
+        card_console = CyberCard(right_col, title="System Telemetry Console", subtitle="Event Log")
+        card_console.pack(fill="both", expand=True)
 
-        log_head = ttk.Frame(log_card, style="Surface.TFrame")
-        log_head.pack(fill="x")
-
-        ttk.Label(log_head, text="SYSTEM TELEMETRY CONSOLE", foreground=OMNI_GREEN, font=FONT_HEADING).pack(side="left")
+        log_head = tk.Frame(card_console.body, bg=BG_PANEL)
+        log_head.pack(fill="x", pady=(0, 4))
 
         self._wave_index = 0
         self._waveforms = [
@@ -506,13 +310,29 @@ class HomeScreen(ttk.Frame):
             "[ ▇█▇▆▅▃▂  ] MATRIX ONLINE",
             "[ █▇▆▅▃▂ ▂ ] MATRIX ONLINE",
         ]
-        self.lbl_matrix_monitor = ttk.Label(
+        self.lbl_matrix_monitor = tk.Label(
             log_head,
             text=self._waveforms[0],
-            foreground=OMNI_GREEN_GLOW,
+            bg=BG_PANEL,
+            fg=OMNI_GREEN_GLOW,
             font=FONT_BADGE,
         )
-        self.lbl_matrix_monitor.pack(side="left", padx=(10, 0))
+        self.lbl_matrix_monitor.pack(side="left")
+
+        btn_clear = tk.Button(
+            log_head,
+            text="CLEAR",
+            bg=BG_SURFACE,
+            fg=TEXT_MUTED,
+            font=("Consolas", 7, "bold"),
+            padx=6,
+            pady=1,
+            relief="solid",
+            bd=1,
+            cursor="hand2",
+            command=self.clear_log,
+        )
+        btn_clear.pack(side="right", padx=(4, 0))
 
         btn_view_inv = ttk.Button(
             log_head,
@@ -523,23 +343,32 @@ class HomeScreen(ttk.Frame):
         btn_view_inv.pack(side="right")
 
         self.txt_log = tk.Text(
-            log_card,
-            bg=BG_PANEL,
+            card_console.body,
+            bg="#080e0a",
             fg=TEXT_PRIMARY,
             insertbackground=OMNI_GREEN,
-            height=7,
-            font=("Consolas", 9),
-            relief="flat",
+            height=6,
+            font=FONT_MONO,
+            relief="solid",
+            bd=1,
+            highlightthickness=0,
             wrap="word",
         )
-        self.txt_log.pack(fill="both", expand=True, pady=(6, 0))
+        self.txt_log.pack(fill="both", expand=True)
         self.txt_log.configure(state="disabled")
 
     def append_log(self, text: str) -> None:
-        """Append log line to telemetry console."""
+        """Append log line to telemetry console with timestamp."""
+        ts = datetime.datetime.now().strftime("%H:%M:%S")
         self.txt_log.configure(state="normal")
-        self.txt_log.insert("end", f"> {text}\n")
+        self.txt_log.insert("end", f"[{ts}] > {text}\n")
         self.txt_log.see("end")
+        self.txt_log.configure(state="disabled")
+
+    def clear_log(self) -> None:
+        """Clear the telemetry log."""
+        self.txt_log.configure(state="normal")
+        self.txt_log.delete("1.0", "end")
         self.txt_log.configure(state="disabled")
 
     def tick_animation(self) -> None:
@@ -551,14 +380,16 @@ class HomeScreen(ttk.Frame):
         self.lbl_timekeeper.configure(text=f"GALVAN TIME // {now.strftime('%H:%M:%S')}")
 
     def set_device_info(self, device: Optional[DeviceSummary]) -> None:
-        """Update selected device display."""
+        """Update selected device display and signal meter."""
         if device:
             self.lbl_device_name.configure(text=f"Device: {device.display_name}")
             rssi_str = f"{device.rssi} dBm" if device.rssi is not None else "Unknown"
-            self.lbl_device_addr.configure(text=f"Address: {device.sanitized_address} | RSSI: {rssi_str}")
+            self.lbl_device_addr.configure(text=f"MAC: {device.sanitized_address} | RSSI: {rssi_str}")
+            self.signal_meter.set_rssi(device.rssi)
         else:
             self.lbl_device_name.configure(text="No peripheral selected")
             self.lbl_device_addr.configure(text="MAC: N/A | RSSI: N/A")
+            self.signal_meter.set_rssi(None)
 
     def _wrap_sound(self, callback: Callable[[], None]) -> Callable[[], None]:
         """Wrap an action callback with a light futuristic interaction sound."""
@@ -577,5 +408,5 @@ class HomeScreen(ttk.Frame):
 
     def set_status(self, text: str, state: SessionState) -> None:
         """Update status line and dial."""
-        self.lbl_status.configure(text=f"STATUS: {text}")
+        self.lbl_status.configure(text=f"STATUS: {text.upper()}")
         self.dial.update_state(state)

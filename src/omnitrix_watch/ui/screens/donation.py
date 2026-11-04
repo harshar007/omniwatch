@@ -7,11 +7,13 @@ from tkinter import messagebox, ttk
 import webbrowser
 
 from omnitrix_watch.sound import sound_player
+from omnitrix_watch.ui.components.cards import CyberCard
 from omnitrix_watch.ui.theme import (
     BG_DARK,
     BG_PANEL,
     BG_SURFACE,
     BORDER_COLOR,
+    BORDER_BRIGHT,
     FONT_BADGE,
     FONT_BODY,
     FONT_HEADING,
@@ -42,44 +44,39 @@ class DonationScreen(ttk.Frame):
 
     def _build_ui(self) -> None:
         # Title bar
-        header = ttk.Frame(self, style="TFrame")
-        header.pack(fill="x", padx=20, pady=(15, 8))
+        header = tk.Frame(self, bg=BG_DARK)
+        header.pack(fill="x", padx=16, pady=(12, 8))
 
-        title_box = ttk.Frame(header, style="TFrame")
+        title_box = tk.Frame(header, bg=BG_DARK)
         title_box.pack(side="left")
 
-        ttk.Label(
+        tk.Label(
             title_box,
             text="💖 GALVAN PRIME DONATION & SPONSOR HUB",
-            foreground=OMNI_GREEN,
+            bg=BG_DARK,
+            fg=OMNI_GREEN,
             font=FONT_TITLE,
         ).pack(anchor="w")
 
-        ttk.Label(
+        tk.Label(
             title_box,
             text="POWER AZMUTH'S WORKSHOP // 100% FREE & OPEN-SOURCE COMMUNITY PROJECT",
-            foreground=TEXT_MUTED,
+            bg=BG_DARK,
+            fg=TEXT_MUTED,
             font=FONT_BADGE,
         ).pack(anchor="w", pady=(2, 0))
 
         # Main Layout: 2 Columns
-        body = ttk.Frame(self, style="TFrame")
-        body.pack(fill="both", expand=True, padx=20, pady=10)
+        body = tk.Frame(self, bg=BG_DARK)
+        body.pack(fill="both", expand=True, padx=16, pady=6)
 
         # Left Column: Instant One-Click Donate Buttons & Perks
-        left_col = ttk.Frame(body, style="Panel.TFrame", padding=15)
-        left_col.pack(side="left", fill="both", expand=True, padx=(0, 10))
-
-        ttk.Label(
-            left_col,
-            text="⚡ INSTANT DONATION CHANNELS",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        ).pack(anchor="w", pady=(0, 10))
+        card_channels = CyberCard(body, title="Instant Donation Channels", subtitle="Direct Support")
+        card_channels.pack(side="left", fill="both", expand=True, padx=(0, 10))
 
         # Button 1: GitHub Sponsors
         btn_gh = tk.Button(
-            left_col,
+            card_channels.body,
             text="💖 SPONSOR ON GITHUB SPONSORS",
             bg="#24292e",
             fg="#ea4aaa",
@@ -97,7 +94,7 @@ class DonationScreen(ttk.Frame):
 
         # Button 2: Buy Me A Coffee
         btn_bmc = tk.Button(
-            left_col,
+            card_channels.body,
             text="☕ BUY ME A COFFEE ($3 / $5)",
             bg="#2a2510",
             fg="#ffdd00",
@@ -115,8 +112,8 @@ class DonationScreen(ttk.Frame):
 
         # Button 3: Ko-fi
         btn_kofi = tk.Button(
-            left_col,
-            text="🥤 TIP ON KO-FI (NO FEES)",
+            card_channels.body,
+            text="🥤 TIP ON KO-FI (ZERO FEES)",
             bg="#2a1515",
             fg="#ff5e5b",
             activebackground="#ff5e5b",
@@ -133,7 +130,7 @@ class DonationScreen(ttk.Frame):
 
         # Button 4: PayPal
         btn_pp = tk.Button(
-            left_col,
+            card_channels.body,
             text="🅿️ SEND VIA PAYPAL",
             bg="#0d2038",
             fg="#38bdf8",
@@ -149,41 +146,36 @@ class DonationScreen(ttk.Frame):
         )
         btn_pp.pack(fill="x", pady=4)
 
-        # Perks & Transparency Card
-        perks_box = ttk.Frame(left_col, style="Surface.TFrame", padding=10)
-        perks_box.pack(fill="both", expand=True, pady=(15, 0))
+        # Perks & Transparency Box
+        perks_box = tk.Frame(card_channels.body, bg=BG_SURFACE, highlightthickness=1, highlightbackground=BORDER_COLOR, padx=10, pady=8)
+        perks_box.pack(fill="both", expand=True, pady=(12, 0))
 
-        ttk.Label(
+        tk.Label(
             perks_box,
-            text="📊 WHERE YOUR DONATIONS GO",
-            foreground=OMNI_GREEN,
+            text="📊 RESOURCE ALLOCATION MATRIX",
+            bg=BG_SURFACE,
+            fg=OMNI_GREEN,
             font=FONT_HEADING,
         ).pack(anchor="w", pady=(0, 6))
 
         breakdown = (
-            "• 50% Hardware Lab: Purchasing smartwatches & BLE sniffers\n"
-            "• 25% CI/CD Cloud: GitHub Actions runners & build hosting\n"
+            "• 50% Hardware Lab: Purchasing test smartwatches & BLE sniffers\n"
+            "• 25% CI/CD Cloud: GitHub Actions runners & binary hosting\n"
             "• 15% Audio/Vector Art: Synthesized sound & alien graphics\n"
-            "• 10% Coffee & Fuel: Late night debugging sessions!"
+            "• 10% Coffee & Fuel: Late-night BLE packet debugging!"
         )
-        ttk.Label(
+        tk.Label(
             perks_box,
             text=breakdown,
-            foreground=TEXT_PRIMARY,
+            bg=BG_SURFACE,
+            fg=TEXT_PRIMARY,
             font=("Consolas", 9),
             justify="left",
         ).pack(anchor="w")
 
         # Right Column: Galactic Tiers & Crypto
-        right_col = ttk.Frame(body, style="Panel.TFrame", padding=15)
-        right_col.pack(side="right", fill="both", expand=True)
-
-        ttk.Label(
-            right_col,
-            text="🪐 GALACTIC SPONSORSHIP TIERS",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        ).pack(anchor="w", pady=(0, 8))
+        card_tiers = CyberCard(body, title="Galactic Sponsorship Tiers", subtitle="Contributor Recognition")
+        card_tiers.pack(side="right", fill="both", expand=True)
 
         tiers = [
             ("🟢 LEVEL 1: GALVANIC CADET ($3)", "Name permanently inscribed in README.md Hall of Fame!"),
@@ -193,28 +185,31 @@ class DonationScreen(ttk.Frame):
         ]
 
         for title, desc in tiers:
-            t_frame = ttk.Frame(right_col, style="Surface.TFrame", padding=8)
+            t_frame = tk.Frame(card_tiers.body, bg=BG_SURFACE, highlightthickness=1, highlightbackground=BORDER_COLOR, padx=8, pady=6)
             t_frame.pack(fill="x", pady=3)
-            ttk.Label(t_frame, text=title, foreground=OMNI_GREEN_GLOW, font=("Consolas", 9, "bold")).pack(anchor="w")
-            ttk.Label(t_frame, text=desc, foreground=TEXT_MUTED, font=("Consolas", 8)).pack(anchor="w")
+            tk.Label(t_frame, text=title, bg=BG_SURFACE, fg=OMNI_GREEN_GLOW, font=("Consolas", 9, "bold")).pack(anchor="w")
+            tk.Label(t_frame, text=desc, bg=BG_SURFACE, fg=TEXT_MUTED, font=("Consolas", 8)).pack(anchor="w")
 
         # Crypto Section
-        crypto_box = ttk.Frame(right_col, style="Surface.TFrame", padding=10)
-        crypto_box.pack(fill="x", pady=(12, 0))
+        crypto_box = tk.Frame(card_tiers.body, bg=BG_SURFACE, highlightthickness=1, highlightbackground=BORDER_COLOR, padx=10, pady=8)
+        crypto_box.pack(fill="x", pady=(10, 0))
 
-        ttk.Label(
+        tk.Label(
             crypto_box,
-            text="💎 WEB3 CRYPTO DONATION",
-            foreground=OMNI_GREEN,
+            text="💎 WEB3 CRYPTO CONTRIBUTIONS",
+            bg=BG_SURFACE,
+            fg=OMNI_GREEN,
             font=FONT_HEADING,
         ).pack(anchor="w", pady=(0, 4))
 
-        ttk.Label(
+        tk.Label(
             crypto_box,
-            text="View full crypto wallet list (BTC, ETH, USDT, SOL) in DONATION.md or copy addresses directly from the project repository.",
-            foreground=TEXT_MUTED,
+            text="View full crypto wallet addresses (BTC, ETH, USDT, SOL) in DONATION.md or copy addresses directly from the project repository.",
+            bg=BG_SURFACE,
+            fg=TEXT_MUTED,
             font=("Consolas", 8),
             wraplength=380,
+            justify="left",
         ).pack(anchor="w")
 
     def _open_url(self, url: str) -> None:

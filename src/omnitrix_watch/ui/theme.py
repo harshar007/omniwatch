@@ -6,11 +6,13 @@ import tkinter as tk
 from tkinter import ttk
 
 # Omnitrix color palette
+BG_VOID = "#030604"
 BG_DARK = "#080c0a"
 BG_PANEL = "#101813"
 BG_SURFACE = "#17231c"
 BG_HIGHLIGHT = "#203328"
 BORDER_COLOR = "#264a34"
+BORDER_BRIGHT = "#3f7a55"
 
 OMNI_GREEN = "#00ff55"
 OMNI_GREEN_GLOW = "#70ff94"
@@ -25,13 +27,16 @@ TEXT_DIM = "#476352"
 COLOR_WARNING = "#fbbf24"
 COLOR_ERROR = "#f87171"
 COLOR_INFO = "#38bdf8"
+COLOR_CYAN = "#00f0ff"
+COLOR_PURPLE = "#c084fc"
 
-FONT_TITLE = ("Consolas", 16, "bold")
-FONT_HEADING = ("Consolas", 12, "bold")
+FONT_TITLE = ("Consolas", 15, "bold")
+FONT_HEADING = ("Consolas", 11, "bold")
 FONT_BODY = ("Consolas", 10)
 FONT_MONO = ("Consolas", 9)
 FONT_DIAL = ("Consolas", 11, "bold")
 FONT_BADGE = ("Consolas", 8, "bold")
+FONT_SUBTITLE = ("Consolas", 9, "normal")
 
 
 def apply_theme(root: tk.Tk) -> None:
@@ -57,6 +62,12 @@ def apply_theme(root: tk.Tk) -> None:
     style.configure(
         "Surface.TFrame",
         background=BG_SURFACE,
+        relief="solid",
+        borderwidth=1,
+    )
+    style.configure(
+        "Card.TFrame",
+        background=BG_PANEL,
         relief="solid",
         borderwidth=1,
     )
@@ -86,6 +97,18 @@ def apply_theme(root: tk.Tk) -> None:
         font=FONT_TITLE,
     )
     style.configure(
+        "Subheader.TLabel",
+        background=BG_DARK,
+        foreground=OMNI_GREEN_GLOW,
+        font=FONT_HEADING,
+    )
+    style.configure(
+        "Value.TLabel",
+        background=BG_PANEL,
+        foreground=OMNI_GREEN_GLOW,
+        font=("Consolas", 12, "bold"),
+    )
+    style.configure(
         "Badge.TLabel",
         background=OMNI_GREEN_DARK,
         foreground=OMNI_GREEN_GLOW,
@@ -111,6 +134,24 @@ def apply_theme(root: tk.Tk) -> None:
         bordercolor=[("active", OMNI_GREEN), ("disabled", BG_PANEL)],
     )
 
+    # Accent button (Vibrant illuminated green)
+    style.configure(
+        "Accent.TButton",
+        background=OMNI_GREEN_DARK,
+        foreground=OMNI_GREEN_GLOW,
+        font=FONT_HEADING,
+        borderwidth=1,
+        bordercolor=OMNI_GREEN,
+        focuscolor="none",
+        padding=(12, 6),
+    )
+    style.map(
+        "Accent.TButton",
+        background=[("active", OMNI_GREEN_DIM), ("disabled", BG_DARK)],
+        foreground=[("active", "#ffffff"), ("disabled", TEXT_DIM)],
+        bordercolor=[("active", OMNI_CORE_GLOW), ("disabled", BG_PANEL)],
+    )
+
     # Danger / disconnect button
     style.configure(
         "Danger.TButton",
@@ -134,7 +175,7 @@ def apply_theme(root: tk.Tk) -> None:
         fieldbackground=BG_PANEL,
         foreground=TEXT_PRIMARY,
         font=FONT_MONO,
-        rowheight=24,
+        rowheight=26,
         borderwidth=1,
     )
     style.configure(
@@ -161,7 +202,7 @@ def apply_theme(root: tk.Tk) -> None:
         background=BG_PANEL,
         foreground=TEXT_MUTED,
         font=FONT_HEADING,
-        padding=(16, 6),
+        padding=(14, 6),
     )
     style.map(
         "TNotebook.Tab",
@@ -177,4 +218,15 @@ def apply_theme(root: tk.Tk) -> None:
         bordercolor=BORDER_COLOR,
         lightcolor=OMNI_GREEN_GLOW,
         darkcolor=OMNI_GREEN_DIM,
+    )
+
+    # Custom Entry fields
+    style.configure(
+        "TEntry",
+        fieldbackground=BG_PANEL,
+        foreground=TEXT_PRIMARY,
+        insertcolor=OMNI_GREEN,
+        bordercolor=BORDER_COLOR,
+        lightcolor=BORDER_COLOR,
+        darkcolor=BORDER_COLOR,
     )

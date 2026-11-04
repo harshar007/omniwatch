@@ -263,39 +263,50 @@ pytest -v
 
 ## 🗂️ Repository Directory Anatomy
 
-```text
+`	ext
 omnitrix-watch/
 ├── .github/
 │   ├── FUNDING.yml                 # GitHub Sponsors & Community Funding config
 │   └── workflows/release.yml       # Automated GitHub Release CI/CD pipeline
 ├── assets/                         # Graphic & Audio Assets
-│   ├── omnitrix.ico                # Multi-resolution application icon
+│   ├── icons/                      # Multi-resolution application icons & emblems
+│   ├── omnitrix.ico                # Root asset alias for packaging compatibility
 │   ├── omnitrix.png                # High-res vector emblem
-│   └── sounds/                     # 37.7 KB Synthesized Omnitrix sound effects
-├── config/                         # Configuration templates (app.example.toml)
+│   └── sounds/                     # Synthesized pure mathematical Omnitrix audio (< 40 KB)
+├── config/                         # Configuration templates (app.example.toml, watchface.example.json)
 ├── docs/                           # Research & Engineering Docs
+│   ├── architecture.md             # Complete system architecture & UI component model
 │   ├── watchface-roadmap.md        # Redmi Watch Move 2 watch face guide & coordinates
 │   ├── device-notes.md             # Baseline hardware tracking template
 │   ├── gatt-inventory.md           # Sanitized GATT service database
 │   └── release-guide.md            # Release packaging documentation
-├── scripts/                        # Maintenance & Build Scripts
+├── scripts/                        # Maintenance, Build, & Launcher Scripts
 │   ├── build_release.py            # Standalone .exe packager (PyInstaller)
 │   ├── generate_icon.py            # Multi-layer .ico icon generator
-│   └── generate_sounds.py          # Pure math WAV audio synthesizer (< 38 KB)
+│   ├── generate_sounds.py          # Pure math WAV audio synthesizer (< 38 KB)
+│   └── launchers/                  # Dedicated launch & shortcut scripts
+│       ├── launch_gui.bat / .ps1
+│       ├── launch_simulator.bat / .ps1
+│       └── create_desktop_shortcut.bat / .ps1
 ├── src/omnitrix_watch/             # Application Core Package
 │   ├── ble/                        # Async BLE scanner, connection, and inspector
 │   ├── models/                     # DeviceSummary & GattInventory data structures
 │   ├── services/                   # Thread-safe session coordinator & event queue
-│   ├── sound.py                    # Non-blocking winsound audio manager
-│   ├── watchface/                  # 10 Alien DNA database & watch face generator
-│   └── ui/                         # Tkinter Omnitrix Dashboard & UI Screens
-│       ├── app.py                  # Main window controller with global HUD bar
+│   ├── sound.py                    # Non-blocking audio manager with global mute toggle
+│   ├── watchface/                  # 18 Alien DNA database & watch face generator
+│   └── ui/                         # Modern Galvanic Cyber UI Architecture
+│       ├── app.py                  # Main window coordinator with global HUD
 │       ├── theme.py                # Galvanic color palette & ttk styles
-│       └── screens/                # Home dial, WatchFace builder, Radar, & GATT
-├── tests/                          # 18 Automated Pytest Suites
+│       ├── components/             # Reusable UI widgets: HeaderBar, OmniNavBar,
+│       │                           # FooterHUD, CyberCard, Dial, Radar, WatchPreview
+│       └── screens/                # Simulator, Dashboard, WatchFace, Radar, GATT, Donation
+├── tests/                          # 27 Automated Pytest Suites
+├── Launch-Omnitrix.bat / .ps1      # Root one-click companion launchers
+├── Launch-Simulator.bat / .ps1     # Root one-click wearable simulator launchers
+├── Create-Desktop-Shortcut.bat/.ps1# Desktop shortcut creators
 ├── DONATION.md                     # Galactic Sponsorship & Donation Hub
 └── pyproject.toml                  # PEP 621 metadata & packaging dependencies
-```
+`
 
 ---
 

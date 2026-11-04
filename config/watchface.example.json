@@ -1,0 +1,28 @@
+{
+  "$schema": "https://omnitrix-watch.dev/schemas/watchface-v1.json",
+  "name": "Omnitrix Classic Protocol",
+  "target_device": "Redmi Watch Move 2",
+  "screen": {
+    "width": 390,
+    "height": 450,
+    "shape": "rectangle",
+    "corner_radius": 24
+  },
+  "alien_profile": {
+    "id": 1,
+    "codename": "ALIEN-01",
+    "name": "Heatblast",
+    "species": "Pyronite",
+    "homeworld": "Pyros",
+    "dna_code": "PYRO-7720-DNA"
+  },
+  "display_options": {
+    "time_format_24h": true,
+    "show_seconds": true,
+    "show_date": true,
+    "show_battery": true,
+    "show_heart_rate": true,
+    "glow_color": "#00ff55",
+    "dial_style": "omnitrix_classic"
+  }
+}

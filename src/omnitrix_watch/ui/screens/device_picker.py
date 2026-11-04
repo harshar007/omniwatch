@@ -9,11 +9,14 @@ from typing import Callable, Optional
 
 from omnitrix_watch.models.device import DeviceSummary
 from omnitrix_watch.sound import sound_player
+from omnitrix_watch.ui.components.cards import CyberCard
+from omnitrix_watch.ui.components.radar import OmnitrixRadarCanvas
 from omnitrix_watch.ui.theme import (
     BG_DARK,
     BG_PANEL,
     BG_SURFACE,
     BORDER_COLOR,
+    BORDER_BRIGHT,
     FONT_BADGE,
     FONT_BODY,
     FONT_HEADING,
@@ -29,96 +32,8 @@ from omnitrix_watch.ui.theme import (
     TEXT_PRIMARY,
 )
 
-
-class OmnitrixRadarCanvas(tk.Canvas):
-    """Futuristic 360-degree radar display plotting discovered Bluetooth peripherals."""
-
-    def __init__(self, parent: tk.Widget, size: int = 150, **kwargs) -> None:
-        super().__init__(
-            parent,
-            width=size,
-            height=size,
-            bg="#030805",
-            highlightthickness=1,
-            highlightbackground=BORDER_COLOR,
-            **kwargs,
-        )
-        self.size = size
-        self.cx = size / 2
-        self.cy = size / 2
-        self.radius = (size / 2) - 12
-        self.radar_angle = 0.0
-        self.is_scanning = False
-        self.devices: list[tuple[float, float, str, bool]] = []
-        self.draw()
-
-    def update_scan_state(self, scanning: bool) -> None:
-        """Update active scanning state."""
-        self.is_scanning = scanning
-        self.draw()
-
-    def update_devices(self, dev_list: list[DeviceSummary], selected_addr: Optional[str] = None) -> None:
-        """Map discovered devices to radar coordinates based on hash and signal strength."""
-        self.devices.clear()
-        for i, dev in enumerate(dev_list):
-            addr_hash = sum(ord(c) for c in dev.address)
-            angle = (addr_hash % 360) * (math.pi / 180.0)
-            
-            rssi = dev.rssi if dev.rssi is not None else -75
-            clamped_rssi = max(-95, min(-40, rssi))
-            dist_ratio = 0.25 + ((-40 - clamped_rssi) / 55.0) * 0.62
-
-            is_sel = (dev.address == selected_addr)
-            label = dev.display_name[:10]
-            self.devices.append((angle, dist_ratio, label, is_sel))
-        self.draw()
-
-    def tick_animation(self) -> None:
-        """Advance the rotating radar beam."""
-        if self.is_scanning:
-            self.radar_angle = (self.radar_angle + 0.12) % (2 * math.pi)
-            self.draw()
-
-    def draw(self) -> None:
-        """Render radar grid, sweep beam, and target blips."""
-        self.delete("all")
-        cx, cy, r = self.cx, self.cy, self.radius
-
-        # 1. Bezel ring and concentric range rings
-        self.create_oval(cx - r, cy - r, cx + r, cy + r, outline=OMNI_GREEN_DARK, width=2)
-        self.create_oval(cx - r * 0.66, cy - r * 0.66, cx + r * 0.66, cy + r * 0.66, outline="#0d2818", width=1)
-        self.create_oval(cx - r * 0.33, cy - r * 0.33, cx + r * 0.33, cy + r * 0.33, outline="#0d2818", width=1)
-
-        # 2. Crosshair grid axes
-        self.create_line(cx - r, cy, cx + r, cy, fill="#0d2818", width=1)
-        self.create_line(cx, cy - r, cx, cy + r, fill="#0d2818", width=1)
-
-        # 3. Rotating radar sweep line
-        if self.is_scanning:
-            sweep_x = cx + r * math.cos(self.radar_angle)
-            sweep_y = cy + r * math.sin(self.radar_angle)
-            self.create_line(cx, cy, sweep_x, sweep_y, fill=OMNI_GREEN_GLOW, width=2)
-
-            trail_angle = self.radar_angle - 0.2
-            tx = cx + r * math.cos(trail_angle)
-            ty = cy + r * math.sin(trail_angle)
-            self.create_line(cx, cy, tx, ty, fill=OMNI_GREEN_DIM, width=1)
-
-        # 4. Draw Device Blips
-        for angle, dist_ratio, label, is_sel in self.devices:
-            bx = cx + (r * dist_ratio) * math.cos(angle)
-            by = cy + (r * dist_ratio) * math.sin(angle)
-
-            if is_sel:
-                self.create_rectangle(bx - 6, by - 6, bx + 6, by + 6, outline=OMNI_CORE_GLOW, width=2)
-                self.create_oval(bx - 3, by - 3, bx + 3, by + 3, fill=OMNI_GREEN_GLOW, outline="")
-                self.create_text(bx, by - 11, text=label, fill=OMNI_GREEN_GLOW, font=("Consolas", 7, "bold"))
-            else:
-                self.create_oval(bx - 3, by - 3, bx + 3, by + 3, fill=OMNI_GREEN, outline="")
-
-        # 5. Radar status text
-        status_txt = "SCANNING" if self.is_scanning else f"{len(self.devices)} TARGETS"
-        self.create_text(cx, cy + r - 8, text=status_txt, fill=OMNI_GREEN_DIM, font=("Consolas", 7, "bold"))
+# Re-export OmnitrixRadarCanvas for backward compatibility
+__all__ = ["DevicePickerScreen", "OmnitrixRadarCanvas"]
 
 
 class DevicePickerScreen(ttk.Frame):
@@ -143,23 +58,25 @@ class DevicePickerScreen(ttk.Frame):
 
     def _build_ui(self) -> None:
         # Title bar
-        header = ttk.Frame(self, style="TFrame")
-        header.pack(fill="x", padx=20, pady=(15, 8))
+        header = tk.Frame(self, bg=BG_DARK)
+        header.pack(fill="x", padx=16, pady=(12, 8))
 
-        title_box = ttk.Frame(header, style="TFrame")
+        title_box = tk.Frame(header, bg=BG_DARK)
         title_box.pack(side="left")
 
-        ttk.Label(
+        tk.Label(
             title_box,
             text="📡 OMNITRIX RADAR MATRIX // TARGET LOCK",
-            foreground=OMNI_GREEN,
+            bg=BG_DARK,
+            fg=OMNI_GREEN,
             font=FONT_TITLE,
         ).pack(anchor="w")
 
-        ttk.Label(
+        tk.Label(
             title_box,
-            text="DISCOVERING PERIPHERALS OVER ENCRYPTED BLUETOOTH LOW ENERGY",
-            foreground=TEXT_MUTED,
+            text="DISCOVERING NEARBY PERIPHERALS OVER BLUETOOTH LOW ENERGY",
+            bg=BG_DARK,
+            fg=TEXT_MUTED,
             font=FONT_BADGE,
         ).pack(anchor="w", pady=(2, 0))
 
@@ -177,29 +94,29 @@ class DevicePickerScreen(ttk.Frame):
         )
         target_badge.pack(side="right")
 
-        # Top Control & Radar Section
-        top_box = ttk.Frame(self, style="Surface.TFrame", padding=10)
-        top_box.pack(fill="x", padx=20, pady=(0, 10))
+        # Top Control & Radar Section using CyberCard
+        top_card = CyberCard(self, title="Radar Sweep & Targeting Controls", subtitle="Bluetooth Radio Active")
+        top_card.pack(fill="x", padx=16, pady=(0, 8))
 
         # Left side: Radar Canvas
-        self.radar = OmnitrixRadarCanvas(top_box, size=140)
+        self.radar = OmnitrixRadarCanvas(top_card.body, size=140)
         self.radar.pack(side="left", padx=(0, 15))
 
         # Right side: Targeting controls
-        ctrl_box = ttk.Frame(top_box, style="Surface.TFrame")
+        ctrl_box = tk.Frame(top_card.body, bg=BG_PANEL)
         ctrl_box.pack(side="left", fill="both", expand=True)
 
         # Row 1: Filter & Presets
-        row1 = ttk.Frame(ctrl_box, style="Surface.TFrame")
+        row1 = tk.Frame(ctrl_box, bg=BG_PANEL)
         row1.pack(fill="x", pady=(0, 8))
 
-        ttk.Label(row1, text="TARGET FILTER:", font=FONT_HEADING, foreground=OMNI_GREEN).pack(side="left", padx=(0, 6))
+        tk.Label(row1, text="TARGET FILTER:", font=FONT_HEADING, bg=BG_PANEL, fg=OMNI_GREEN).pack(side="left", padx=(0, 6))
 
         self.var_filter = tk.StringVar(value="")
         self.ent_filter = tk.Entry(
             row1,
             textvariable=self.var_filter,
-            bg=BG_PANEL,
+            bg=BG_SURFACE,
             fg=OMNI_GREEN_GLOW,
             insertbackground=OMNI_GREEN,
             relief="solid",
@@ -211,7 +128,7 @@ class DevicePickerScreen(ttk.Frame):
 
         self.btn_quick_redmi = ttk.Button(
             row1,
-            text="🎯 LOCK 'Redmi'",
+            text="🎯 FILTER 'Redmi'",
             style="Omni.TButton",
             command=self._apply_redmi_filter,
         )
@@ -219,17 +136,17 @@ class DevicePickerScreen(ttk.Frame):
 
         self.btn_clear_filter = ttk.Button(
             row1,
-            text="ALL DEVICES",
+            text="SHOW ALL",
             style="Omni.TButton",
             command=self._clear_filter,
         )
         self.btn_clear_filter.pack(side="left", padx=4)
 
         # Row 2: Scan Action Buttons & Duration
-        row2 = ttk.Frame(ctrl_box, style="Surface.TFrame")
+        row2 = tk.Frame(ctrl_box, bg=BG_PANEL)
         row2.pack(fill="x")
 
-        ttk.Label(row2, text="SWEEP TIME (s):", font=FONT_BODY, foreground=TEXT_PRIMARY).pack(side="left", padx=(0, 6))
+        tk.Label(row2, text="SWEEP TIME (s):", font=FONT_BODY, bg=BG_PANEL, fg=TEXT_PRIMARY).pack(side="left", padx=(0, 6))
 
         self.var_duration = tk.StringVar(value="5.0")
         self.spin_duration = tk.Spinbox(
@@ -238,7 +155,7 @@ class DevicePickerScreen(ttk.Frame):
             to=30.0,
             increment=1.0,
             textvariable=self.var_duration,
-            bg=BG_PANEL,
+            bg=BG_SURFACE,
             fg=TEXT_PRIMARY,
             insertbackground=OMNI_GREEN,
             relief="solid",
@@ -251,7 +168,7 @@ class DevicePickerScreen(ttk.Frame):
         self.btn_scan = ttk.Button(
             row2,
             text="⚡ START RADAR SWEEP",
-            style="Omni.TButton",
+            style="Accent.TButton",
             command=self._handle_scan_click,
         )
         self.btn_scan.pack(side="left", padx=4)
@@ -264,12 +181,12 @@ class DevicePickerScreen(ttk.Frame):
         )
         self.btn_cancel.pack(side="left", padx=4)
 
-        # Discovered Devices Table
-        table_frame = ttk.Frame(self, style="Surface.TFrame", padding=2)
-        table_frame.pack(fill="both", expand=True, padx=20, pady=(0, 10))
+        # Discovered Devices Table Card
+        table_card = CyberCard(self, title="Discovered Peripherals", subtitle="Airwave Inventory")
+        table_card.pack(fill="both", expand=True, padx=16, pady=(0, 8))
 
         columns = ("status", "name", "address", "rssi_meter", "services")
-        self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", selectmode="browse")
+        self.tree = ttk.Treeview(table_card.body, columns=columns, show="headings", selectmode="browse")
         self.tree.heading("status", text="Lock")
         self.tree.heading("name", text="Peripheral Name")
         self.tree.heading("address", text="Sanitized MAC")
@@ -282,7 +199,7 @@ class DevicePickerScreen(ttk.Frame):
         self.tree.column("rssi_meter", width=160, anchor="w")
         self.tree.column("services", width=240, anchor="w")
 
-        scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
+        scrollbar = ttk.Scrollbar(table_card.body, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=scrollbar.set)
 
         self.tree.pack(side="left", fill="both", expand=True)
@@ -292,14 +209,15 @@ class DevicePickerScreen(ttk.Frame):
         self.tree.bind("<Double-1>", lambda e: self._handle_confirm_selection())
 
         # Bottom action bar with target lock confirmation
-        footer = ttk.Frame(self, style="TFrame")
-        footer.pack(fill="x", padx=20, pady=(0, 15))
+        footer = tk.Frame(self, bg=BG_DARK)
+        footer.pack(fill="x", padx=16, pady=(0, 12))
 
-        self.lbl_selected = ttk.Label(
+        self.lbl_selected = tk.Label(
             footer,
             text="No peripheral locked. Select a device from the radar list above.",
+            bg=BG_DARK,
             font=FONT_HEADING,
-            foreground=TEXT_MUTED,
+            fg=TEXT_MUTED,
         )
         self.lbl_selected.pack(side="left")
 
@@ -333,7 +251,7 @@ class DevicePickerScreen(ttk.Frame):
         self.btn_scan.configure(state="disabled")
         self.lbl_selected.configure(
             text="Radar sweep active... Searching airwaves for Redmi Watch Move 2...",
-            foreground=OMNI_GREEN_GLOW,
+            fg=OMNI_GREEN_GLOW,
         )
 
         self.discovered_devices.clear()
@@ -406,7 +324,7 @@ class DevicePickerScreen(ttk.Frame):
         sound_player.play_beep()
         self.lbl_selected.configure(
             text=f"Sweep complete. Identified {count} peripheral{'s' if count != 1 else ''}. Select target to lock.",
-            foreground=OMNI_GREEN if count > 0 else TEXT_MUTED,
+            fg=OMNI_GREEN if count > 0 else TEXT_MUTED,
         )
         self.radar.update_devices(
             list(self.discovered_devices.values()),
@@ -434,7 +352,7 @@ class DevicePickerScreen(ttk.Frame):
             self.selected_device = matched
             self.lbl_selected.configure(
                 text=f"TARGET ACQUIRED: {matched.display_name} ({matched.sanitized_address})",
-                foreground=OMNI_CORE_GLOW,
+                fg=OMNI_CORE_GLOW,
             )
             self.btn_confirm.configure(state="normal")
             self.radar.update_devices(list(self.discovered_devices.values()), matched.address)

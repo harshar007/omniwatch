@@ -10,11 +10,14 @@ from tkinter import messagebox, ttk
 from typing import Optional
 
 from omnitrix_watch.sound import sound_player
+from omnitrix_watch.ui.components.cards import CyberCard
+from omnitrix_watch.ui.components.watch_preview import WatchPreviewCanvas
 from omnitrix_watch.ui.theme import (
     BG_DARK,
     BG_PANEL,
     BG_SURFACE,
     BORDER_COLOR,
+    BORDER_BRIGHT,
     FONT_BADGE,
     FONT_BODY,
     FONT_DIAL,
@@ -37,124 +40,8 @@ from omnitrix_watch.watchface.aliens import (
 )
 from omnitrix_watch.watchface.builder import WatchFaceConfig, WatchFaceGenerator
 
-
-class WatchPreviewCanvas(tk.Canvas):
-    """Visual preview of the watch face on the Redmi Watch Move 2 AMOLED display."""
-
-    def __init__(self, parent: tk.Widget, width: int = 260, height: int = 300, **kwargs) -> None:
-        super().__init__(
-            parent,
-            width=width,
-            height=height,
-            bg="#020503",
-            highlightthickness=2,
-            highlightbackground=BORDER_COLOR,
-            **kwargs,
-        )
-        self.w = width
-        self.h = height
-        self.selected_alien: AlienProfile = DEFAULT_ALIEN_ROSTER[0]
-        self.show_seconds = True
-        self.format_24h = True
-        self.pulse_phase = 0.0
-
-        self.draw()
-
-    def update_alien(self, alien: AlienProfile) -> None:
-        """Switch current alien display."""
-        self.selected_alien = alien
-        self.draw()
-
-    def tick_animation(self) -> None:
-        """Advance time and pulsing glow."""
-        self.pulse_phase = (self.pulse_phase + 0.1) % (2 * math.pi)
-        self.draw()
-
-    def draw(self) -> None:
-        """Render watch face elements simulating Redmi Watch Move 2 screen."""
-        self.delete("all")
-        cx = self.w / 2
-        cy = self.h / 2
-
-        # 1. Bezel of Redmi Watch Move 2 (curved rectangular smartwatch frame)
-        self.create_rectangle(
-            6, 6, self.w - 6, self.h - 6,
-            outline="#1e3828", width=3
-        )
-
-        # 2. Outer Omnitrix ring with pulsing glow
-        glow_width = 2 + int(math.sin(self.pulse_phase) * 1.5 + 1.5)
-        accent_color = self.selected_alien.signature_color
-        dial_r = min(self.w, self.h) / 2 - 28
-
-        self.create_oval(
-            cx - dial_r, cy - dial_r, cx + dial_r, cy + dial_r,
-            outline=OMNI_GREEN, width=glow_width
-        )
-        self.create_oval(
-            cx - dial_r + 6, cy - dial_r + 6, cx + dial_r - 6, cy + dial_r - 6,
-            outline=OMNI_GREEN_DARK, width=1
-        )
-
-        # 3. Timekeeper display (Top section of watch face)
-        now = datetime.datetime.now()
-        if self.format_24h:
-            time_str = now.strftime("%H:%M:%S" if self.show_seconds else "%H:%M")
-        else:
-            time_str = now.strftime("%I:%M:%S" if self.show_seconds else "%I:%M")
-
-        self.create_text(
-            cx, cy - dial_r + 28,
-            text=time_str,
-            fill=OMNI_GREEN_GLOW,
-            font=("Consolas", 16, "bold"),
-        )
-
-        # Date subtitle
-        date_str = now.strftime("%a, %b %d").upper()
-        self.create_text(
-            cx, cy - dial_r + 48,
-            text=date_str,
-            fill="#a0e8b0",
-            font=("Consolas", 8),
-        )
-
-        # 4. Omnitrix Hourglass motif in center
-        tri_size = 40
-        top_pts = [cx - tri_size, cy - 10, cx + tri_size, cy - 10, cx, cy + 20]
-        bot_pts = [cx - tri_size, cy + 50, cx + tri_size, cy + 50, cx, cy + 20]
-        self.create_polygon(top_pts, fill=accent_color, outline=OMNI_GREEN_DARK, width=1)
-        self.create_polygon(bot_pts, fill=accent_color, outline=OMNI_GREEN_DARK, width=1)
-
-        # 5. Alien Core Emblem & Name
-        self.create_oval(cx - 18, cy + 18, cx + 18, cy + 54, fill=BG_DARK, outline=OMNI_GREEN_GLOW, width=2)
-        self.create_text(
-            cx, cy + 36,
-            text=f"#{self.selected_alien.id:02d}",
-            fill=OMNI_GREEN,
-            font=("Consolas", 10, "bold"),
-        )
-
-        self.create_text(
-            cx, cy + 76,
-            text=self.selected_alien.name.upper(),
-            fill=accent_color,
-            font=("Consolas", 10, "bold"),
-        )
-
-        # 6. Complications at bottom (Battery & Pulse)
-        self.create_text(
-            35, self.h - 22,
-            text="⚡ 98%",
-            fill=OMNI_GREEN,
-            font=("Consolas", 8, "bold"),
-        )
-        self.create_text(
-            self.w - 38, self.h - 22,
-            text="♥ 74 BPM",
-            fill="#ff3355",
-            font=("Consolas", 8, "bold"),
-        )
+# Re-export WatchPreviewCanvas for backward compatibility
+__all__ = ["WatchFaceScreen", "WatchPreviewCanvas"]
 
 
 class WatchFaceScreen(ttk.Frame):
@@ -170,17 +57,27 @@ class WatchFaceScreen(ttk.Frame):
 
     def _build_ui(self) -> None:
         # Header banner
-        header = ttk.Frame(self, style="TFrame")
-        header.pack(fill="x", padx=20, pady=(15, 10))
+        header = tk.Frame(self, bg=BG_DARK)
+        header.pack(fill="x", padx=16, pady=(12, 8))
 
-        title = ttk.Label(
-            header,
+        title_box = tk.Frame(header, bg=BG_DARK)
+        title_box.pack(side="left")
+
+        tk.Label(
+            title_box,
             text="OMNITRIX WATCH FACE BUILDER",
-            style="Header.Label",
+            bg=BG_DARK,
+            fg=OMNI_GREEN,
             font=FONT_TITLE,
-            foreground=OMNI_GREEN,
-        )
-        title.pack(side="left")
+        ).pack(anchor="w")
+
+        tk.Label(
+            title_box,
+            text="AMOLED WATCHFACE GENERATOR & ALIEN DNA INTEGRATION",
+            bg=BG_DARK,
+            fg=TEXT_MUTED,
+            font=FONT_BADGE,
+        ).pack(anchor="w", pady=(2, 0))
 
         # Target peripheral badge
         target_badge = tk.Label(
@@ -197,74 +94,83 @@ class WatchFaceScreen(ttk.Frame):
         target_badge.pack(side="right")
 
         # Main Layout: Watch Preview on left, Customizer on right
-        body = ttk.Frame(self, style="TFrame")
-        body.pack(fill="both", expand=True, padx=20, pady=10)
+        body = tk.Frame(self, bg=BG_DARK)
+        body.pack(fill="both", expand=True, padx=16, pady=6)
 
-        # Left Column: Preview
-        left_col = ttk.Frame(body, style="Panel.TFrame", padding=15)
-        left_col.pack(side="left", fill="y", padx=(0, 15))
+        # Left Column: Preview in CyberCard
+        card_preview = CyberCard(body, title="Hardware Display Preview", subtitle="1.85\" AMOLED")
+        card_preview.pack(side="left", fill="y", padx=(0, 12))
 
-        preview_lbl = ttk.Label(
-            left_col,
-            text="WATCH DISPLAY PREVIEW",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        )
-        preview_lbl.pack(anchor="center", pady=(0, 10))
+        self.preview_canvas = WatchPreviewCanvas(card_preview.body, width=240, height=290)
+        self.preview_canvas.pack(pady=4)
 
-        self.preview_canvas = WatchPreviewCanvas(left_col, width=240, height=290)
-        self.preview_canvas.pack(pady=5)
-
-        note_lbl = ttk.Label(
-            left_col,
-            text="AMOLED 1.85\" | 390x450 px",
-            style="Muted.TLabel",
+        tk.Label(
+            card_preview.body,
+            text="NATIVE RESOLUTION: 390 x 450 px",
+            bg=BG_PANEL,
+            fg=TEXT_MUTED,
             font=FONT_BADGE,
-        )
-        note_lbl.pack(pady=(6, 0))
+        ).pack(pady=(4, 0))
 
         # Right Column: Alien DNA Matrix & Controls
-        right_col = ttk.Frame(body, style="TFrame")
+        right_col = tk.Frame(body, bg=BG_DARK)
         right_col.pack(side="right", fill="both", expand=True)
 
         # Card 1: Alien DNA Profile Card
-        alien_card = ttk.Frame(right_col, style="Surface.TFrame", padding=12)
-        alien_card.pack(fill="x", pady=(0, 10))
+        card_dna = CyberCard(right_col, title="Active Alien DNA Matrix", subtitle="Extraterrestrial Profile")
+        card_dna.pack(fill="x", pady=(0, 8))
 
-        ttk.Label(
-            alien_card,
-            text="🧬 ACTIVE ALIEN DNA MATRIX",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        ).pack(anchor="w", pady=(0, 8))
+        # Dropdown quick jump selector
+        jump_row = tk.Frame(card_dna.body, bg=BG_PANEL)
+        jump_row.pack(fill="x", pady=(0, 6))
 
-        self.lbl_alien_title = ttk.Label(
-            alien_card,
+        tk.Label(jump_row, text="JUMP TO ALIEN:", bg=BG_PANEL, fg=TEXT_MUTED, font=FONT_BADGE).pack(side="left", padx=(0, 6))
+
+        alien_names = [f"#{a.id:02d} {a.name} ({a.species})" for a in self.all_aliens]
+        self.combo_var = tk.StringVar(value=alien_names[0])
+        self.combo_alien = ttk.Combobox(
+            jump_row,
+            textvariable=self.combo_var,
+            values=alien_names,
+            state="readonly",
+            width=28,
+        )
+        self.combo_alien.pack(side="left")
+        self.combo_alien.bind("<<ComboboxSelected>>", self._on_combo_select)
+
+        self.lbl_alien_title = tk.Label(
+            card_dna.body,
             text="",
-            foreground=OMNI_GREEN_GLOW,
+            bg=BG_PANEL,
+            fg=OMNI_GREEN_GLOW,
             font=("Consolas", 13, "bold"),
+            anchor="w",
         )
-        self.lbl_alien_title.pack(anchor="w")
+        self.lbl_alien_title.pack(fill="x")
 
-        self.lbl_alien_species = ttk.Label(
-            alien_card,
+        self.lbl_alien_species = tk.Label(
+            card_dna.body,
             text="",
-            foreground=TEXT_PRIMARY,
+            bg=BG_PANEL,
+            fg=TEXT_PRIMARY,
             font=FONT_BODY,
+            anchor="w",
         )
-        self.lbl_alien_species.pack(anchor="w", pady=(2, 2))
+        self.lbl_alien_species.pack(fill="x", pady=(2, 1))
 
-        self.lbl_alien_ability = ttk.Label(
-            alien_card,
+        self.lbl_alien_ability = tk.Label(
+            card_dna.body,
             text="",
-            foreground=TEXT_MUTED,
+            bg=BG_PANEL,
+            fg=TEXT_MUTED,
             font=FONT_BODY,
+            anchor="w",
         )
-        self.lbl_alien_ability.pack(anchor="w")
+        self.lbl_alien_ability.pack(fill="x")
 
         # Selector buttons
-        btn_nav_frame = ttk.Frame(alien_card, style="Surface.TFrame")
-        btn_nav_frame.pack(fill="x", pady=(10, 0))
+        btn_nav_frame = tk.Frame(card_dna.body, bg=BG_PANEL)
+        btn_nav_frame.pack(fill="x", pady=(8, 0))
 
         self.btn_prev = ttk.Button(
             btn_nav_frame,
@@ -272,7 +178,7 @@ class WatchFaceScreen(ttk.Frame):
             style="Omni.TButton",
             command=self._prev_alien,
         )
-        self.btn_prev.pack(side="left", fill="x", expand=True, padx=(0, 5))
+        self.btn_prev.pack(side="left", fill="x", expand=True, padx=(0, 4))
 
         self.btn_next = ttk.Button(
             btn_nav_frame,
@@ -280,23 +186,19 @@ class WatchFaceScreen(ttk.Frame):
             style="Omni.TButton",
             command=self._next_alien,
         )
-        self.btn_next.pack(side="right", fill="x", expand=True, padx=(5, 0))
+        self.btn_next.pack(side="right", fill="x", expand=True, padx=(4, 0))
 
         # Card 2: Watch Face Configuration Options
-        opts_card = ttk.Frame(right_col, style="Surface.TFrame", padding=12)
-        opts_card.pack(fill="x", pady=(0, 10))
+        card_opts = CyberCard(right_col, title="Timekeeper Complications", subtitle="Display Settings")
+        card_opts.pack(fill="x", pady=(0, 8))
 
-        ttk.Label(
-            opts_card,
-            text="⚙️ WATCH FACE TIME & COMPLICATIONS",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        ).pack(anchor="w", pady=(0, 8))
+        opts_inner = tk.Frame(card_opts.body, bg=BG_PANEL)
+        opts_inner.pack(fill="x")
 
         self.var_24h = tk.BooleanVar(value=True)
         chk_24h = ttk.Checkbutton(
-            opts_card,
-            text="24-Hour Time Format (Military Clock)",
+            opts_inner,
+            text="24-Hour Military Time Format",
             variable=self.var_24h,
             command=self._update_opts,
         )
@@ -304,51 +206,56 @@ class WatchFaceScreen(ttk.Frame):
 
         self.var_seconds = tk.BooleanVar(value=True)
         chk_sec = ttk.Checkbutton(
-            opts_card,
-            text="Show Running Seconds Indicator",
+            opts_inner,
+            text="Live Seconds Indicator",
             variable=self.var_seconds,
             command=self._update_opts,
         )
         chk_sec.pack(anchor="w", pady=2)
 
         # Card 3: Export & Installation Actions
-        action_card = ttk.Frame(right_col, style="Surface.TFrame", padding=12)
-        action_card.pack(fill="both", expand=True)
+        card_action = CyberCard(right_col, title="Package for Redmi Watch Move 2", subtitle="Build Artifact")
+        card_action.pack(fill="both", expand=True)
 
-        ttk.Label(
-            action_card,
-            text="📦 PACKAGE FOR REDMI WATCH MOVE 2",
-            foreground=OMNI_GREEN,
-            font=FONT_HEADING,
-        ).pack(anchor="w", pady=(0, 6))
-
-        desc = ttk.Label(
-            action_card,
-            text="Generates watch face layout manifest and asset specification for compile into .bin/.zip format compatible with Redmi Watch Move 2.",
-            foreground=TEXT_MUTED,
+        desc = tk.Label(
+            card_action.body,
+            text="Generates complete watch face layout manifest and asset specification for compile into .bin/.zip format compatible with Redmi Watch Move 2.",
+            bg=BG_PANEL,
+            fg=TEXT_MUTED,
             font=FONT_BODY,
-            wraplength=420,
+            wraplength=440,
+            justify="left",
+            anchor="w",
         )
-        desc.pack(anchor="w", pady=(0, 10))
+        desc.pack(fill="x", pady=(0, 8))
 
         self.btn_export = ttk.Button(
-            action_card,
+            card_action.body,
             text="⚡ EXPORT WATCH FACE BUNDLE (.BIN/.JSON)",
-            style="Omni.TButton",
+            style="Accent.TButton",
             command=self._export_bundle,
         )
-        self.btn_export.pack(fill="x", pady=5)
+        self.btn_export.pack(fill="x", pady=2)
 
         self._update_alien_card()
+
+    def _on_combo_select(self, _event: tk.Event) -> None:
+        idx = self.combo_alien.current()
+        if 0 <= idx < len(self.all_aliens):
+            sound_player.play_alien_select()
+            self.current_alien_idx = idx
+            self._update_alien_card()
 
     def _prev_alien(self) -> None:
         sound_player.play_dial_turn()
         self.current_alien_idx = (self.current_alien_idx - 1) % len(self.all_aliens)
+        self.combo_alien.current(self.current_alien_idx)
         self._update_alien_card()
 
     def _next_alien(self) -> None:
         sound_player.play_dial_turn()
         self.current_alien_idx = (self.current_alien_idx + 1) % len(self.all_aliens)
+        self.combo_alien.current(self.current_alien_idx)
         self._update_alien_card()
 
     def _update_opts(self) -> None:
@@ -363,7 +270,7 @@ class WatchFaceScreen(ttk.Frame):
 
         self.lbl_alien_title.config(
             text=f"[{alien.codename}] #{alien.id:02d} {alien.name.upper()}",
-            foreground=alien.signature_color,
+            fg=alien.signature_color,
         )
         self.lbl_alien_species.config(
             text=f"Species: {alien.species}  |  Homeworld: {alien.homeworld}"

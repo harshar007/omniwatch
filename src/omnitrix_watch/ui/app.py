@@ -13,6 +13,9 @@ from omnitrix_watch.config import AppConfig
 from omnitrix_watch.models.device import DeviceSummary, GattInventory
 from omnitrix_watch.services.device_session import DeviceSession, SessionEvent, SessionState
 from omnitrix_watch.sound import sound_player
+from omnitrix_watch.ui.components.footer_hud import FooterHUD
+from omnitrix_watch.ui.components.header_bar import HeaderBar
+from omnitrix_watch.ui.components.navbar import OmniNavBar
 from omnitrix_watch.ui.screens.device_details import DeviceDetailsScreen
 from omnitrix_watch.ui.screens.device_picker import DevicePickerScreen
 from omnitrix_watch.ui.screens.donation import DonationScreen
@@ -45,14 +48,35 @@ class OmnitrixApp:
 
         self.root.title("OMNITRIX - Watch Companion & Research Platform")
         self.root.geometry(f"{self.config.ui.window_width}x{self.config.ui.window_height}")
-        self.root.minsize(780, 600)
+        self.root.minsize(800, 620)
 
         # Set Omnitrix App Icon if available
         self._set_app_icon()
 
         apply_theme(self.root)
 
-        # Tab notebook for screens
+        # 1. Top Cyber Header Bar
+        self.header_bar = HeaderBar(self.root, on_audio_toggle=self._on_audio_toggled)
+        self.header_bar.pack(fill="x", side="top")
+
+        # 2. Segmented Cyber Navigation Bar
+        nav_tabs = [
+            ("simulator", "⚡ SIMULATOR"),
+            ("home", "🌐 DASHBOARD"),
+            ("watchface", "⌚ WATCH FACE"),
+            ("picker", "📡 BLE SCANNER"),
+            ("details", "🔍 GATT INVENTORY"),
+            ("donation", "💖 GALVAN PRIME"),
+        ]
+        self.navbar = OmniNavBar(
+            self.root,
+            tabs=nav_tabs,
+            on_select=self._on_navbar_select,
+            initial_index=0,
+        )
+        self.navbar.pack(fill="x", side="top")
+
+        # 3. Tab notebook for screen container
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill="both", expand=True)
 
@@ -65,10 +89,10 @@ class OmnitrixApp:
             on_connect=self._action_connect,
             on_disconnect=self._action_disconnect,
             on_inspect=self._action_inspect,
-            on_open_picker=lambda: self.notebook.select(self.screen_picker),
-            on_open_inventory=lambda: self.notebook.select(self.screen_details),
-            on_open_watchface=lambda: self.notebook.select(self.screen_watchface),
-            on_open_simulator=lambda: self.notebook.select(self.screen_simulator),
+            on_open_picker=lambda: self.select_screen_by_index(3),
+            on_open_inventory=lambda: self.select_screen_by_index(4),
+            on_open_watchface=lambda: self.select_screen_by_index(2),
+            on_open_simulator=lambda: self.select_screen_by_index(0),
         )
         self.screen_picker = DevicePickerScreen(
             self.notebook,
@@ -83,58 +107,30 @@ class OmnitrixApp:
         )
         self.screen_donation = DonationScreen(self.notebook)
 
-        self.notebook.add(self.screen_simulator, text="  ⚡ OMNITRIX SIMULATOR  ")
+        self.screens = [
+            self.screen_simulator,
+            self.screen_home,
+            self.screen_watchface,
+            self.screen_picker,
+            self.screen_details,
+            self.screen_donation,
+        ]
+
+        self.notebook.add(self.screen_simulator, text="  ⚡ SIMULATOR  ")
         self.notebook.add(self.screen_home, text="  DIAL DASHBOARD  ")
-        self.notebook.add(self.screen_watchface, text="  WATCH FACE (ALIENS & TIME)  ")
+        self.notebook.add(self.screen_watchface, text="  WATCH FACE  ")
         self.notebook.add(self.screen_picker, text="  BLE SCANNER  ")
         self.notebook.add(self.screen_details, text="  GATT INVENTORY  ")
-        self.notebook.add(self.screen_donation, text="  💖 DONATION & SPONSOR  ")
+        self.notebook.add(self.screen_donation, text="  💖 DONATION  ")
 
-        self.notebook.bind("<<NotebookTabChanged>>", self._on_tab_change)
+        self.notebook.bind("<<NotebookTabChanged>>", self._on_notebook_tab_changed)
 
-        # Omnitrix Global HUD Telemetry Bar at bottom
-        footer_hud = tk.Frame(self.root, bg=BG_PANEL, bd=1, relief="solid")
-        footer_hud.pack(fill="x", side="bottom", padx=4, pady=4)
+        # 4. Global HUD Telemetry Bar at bottom
+        self.footer_hud = FooterHUD(self.root)
+        self.footer_hud.pack(fill="x", side="bottom")
 
-        tk.Label(
-            footer_hud,
-            text="⚡ CORE: 100% NOMINAL",
-            bg=BG_PANEL,
-            fg=OMNI_GREEN,
-            font=("Consolas", 8, "bold"),
-            padx=8,
-            pady=3,
-        ).pack(side="left")
-
-        tk.Label(
-            footer_hud,
-            text="📡 BLE 5.0 ACTIVE",
-            bg=BG_PANEL,
-            fg=OMNI_GREEN_GLOW,
-            font=("Consolas", 8, "bold"),
-            padx=8,
-            pady=3,
-        ).pack(side="left")
-
-        tk.Label(
-            footer_hud,
-            text="🛡️ ZERO-WRITE SANCTIONED",
-            bg=BG_PANEL,
-            fg="#6ee7b7",
-            font=("Consolas", 8, "bold"),
-            padx=8,
-            pady=3,
-        ).pack(side="left")
-
-        tk.Label(
-            footer_hud,
-            text="⌚ TARGET: REDMI WATCH MOVE 2",
-            bg=OMNI_GREEN_DARK,
-            fg=OMNI_GREEN,
-            font=("Consolas", 8, "bold"),
-            padx=10,
-            pady=3,
-        ).pack(side="right")
+        # Global Hotkey navigation [1-6]
+        self._bind_hotkeys()
 
         # Window closing handler
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -151,14 +147,16 @@ class OmnitrixApp:
         candidates = []
         base_dir = getattr(sys, "_MEIPASS", None)
         if base_dir:
+            candidates.append(Path(base_dir) / "assets" / "icons" / "omnitrix.ico")
             candidates.append(Path(base_dir) / "assets" / "omnitrix.ico")
             candidates.append(Path(base_dir) / "assets" / "omnitrix.png")
 
-        # Project tree locations
         project_root = Path(__file__).resolve().parent.parent.parent.parent
+        candidates.append(project_root / "assets" / "icons" / "omnitrix.ico")
         candidates.append(project_root / "assets" / "omnitrix.ico")
         candidates.append(project_root / "assets" / "omnitrix.png")
-        candidates.append(Path("assets") / "omnitrix.ico")
+        candidates.append(Path("assets/icons/omnitrix.ico"))
+        candidates.append(Path("assets/omnitrix.ico"))
 
         for path in candidates:
             if path.exists():
@@ -173,14 +171,50 @@ class OmnitrixApp:
                 except Exception as e:
                     logger.debug("Failed setting icon from %s: %s", path, e)
 
+    def _bind_hotkeys(self) -> None:
+        """Bind keys 1-6 for quick navigation between screens."""
+        def handle_num_key(idx: int) -> None:
+            # Check if focused widget is an Entry or Spinbox
+            focus_widget = self.root.focus_get()
+            if isinstance(focus_widget, (tk.Entry, ttk.Entry, tk.Spinbox)):
+                return
+            self.select_screen_by_index(idx)
+
+        for i in range(len(self.screens)):
+            key = str(i + 1)
+            self.root.bind(f"<Key-{key}>", lambda e, idx=i: handle_num_key(idx))
+            self.root.bind(f"<Alt-Key-{key}>", lambda e, idx=i: handle_num_key(idx))
+
+    def _on_navbar_select(self, index: int, _tab_id: str) -> None:
+        """Called when user clicks a button in OmniNavBar."""
+        if 0 <= index < len(self.screens):
+            self.notebook.select(self.screens[index])
+
+    def _on_notebook_tab_changed(self, _event: tk.Event) -> None:
+        """Synchronize navbar when notebook tab changes."""
+        cur = self.notebook.index(self.notebook.select())
+        if cur != self.navbar.current_index:
+            self.navbar.select_tab(cur)
+
+    def select_screen_by_index(self, index: int) -> None:
+        """Select a screen by its index and synchronize navbar."""
+        if 0 <= index < len(self.screens):
+            self.notebook.select(self.screens[index])
+            self.navbar.select_tab(index)
+
+    def _on_audio_toggled(self, is_enabled: bool) -> None:
+        """Audio state change handler."""
+        status_text = "🔊 AUDIO ACTIVE" if is_enabled else "🔇 AUDIO MUTED"
+        color = OMNI_GREEN_GLOW if is_enabled else TEXT_MUTED
+        self.screen_home.btn_sound.config(
+            text="🔊 AUDIO: ON" if is_enabled else "🔇 AUDIO: OFF",
+            fg=OMNI_GREEN if is_enabled else TEXT_MUTED,
+        )
+
     def _schedule_event_pump(self) -> None:
         """Poll the background session queue every 50ms."""
         self._process_session_events()
         self.root.after(50, self._schedule_event_pump)
-
-    def _on_tab_change(self, _event: tk.Event) -> None:
-        """Play mechanical dial click when switching between Omnitrix modes."""
-        sound_player.play_dial_turn()
 
     def _schedule_dial_tick(self) -> None:
         """Advance dial rotation animation frame."""
@@ -198,6 +232,7 @@ class OmnitrixApp:
             if ev.type == "state_changed":
                 new_state: SessionState = ev.data
                 self.screen_home.set_status(ev.message or new_state.value, new_state)
+                self.header_bar.set_status(new_state.value)
                 if ev.message:
                     self.screen_home.append_log(ev.message)
 
@@ -209,16 +244,20 @@ class OmnitrixApp:
                 devices = ev.data
                 self.screen_picker.set_scan_completed(devices)
                 self.screen_home.append_log(f"Scan finished. {len(devices)} peripherals detected.")
+                self.footer_hud.set_ble_status(f"📡 BLE SCAN: {len(devices)} FOUND")
 
             elif ev.type == "device_selected":
                 dev = ev.data
                 self.screen_home.set_device_info(dev)
                 self.screen_home.append_log(f"Device targeted: {dev.display_name} ({dev.sanitized_address})")
+                self.footer_hud.lbl_target.config(text=f"⌚ TARGET: {dev.display_name[:18]}")
 
             elif ev.type == "connected":
                 dev = ev.data
                 self.screen_home.set_device_info(dev)
                 self.screen_home.append_log(f"GATT link established with {dev.display_name}.")
+                self.header_bar.set_status("LINKED", color=OMNI_GREEN_GLOW, bg_color=OMNI_GREEN_DARK)
+                self.footer_hud.set_ble_status("📡 GATT LINKED", color=OMNI_GREEN_GLOW)
                 messagebox.showinfo(
                     "Connected",
                     f"Successfully established BLE link with {dev.display_name}!\n\n"
@@ -227,6 +266,8 @@ class OmnitrixApp:
 
             elif ev.type == "disconnected":
                 self.screen_home.append_log("BLE link disconnected.")
+                self.header_bar.set_status("STANDBY", color=TEXT_MUTED, bg_color=BG_SURFACE)
+                self.footer_hud.set_ble_status("📡 BLE 5.0 ACTIVE", color=OMNI_GREEN)
 
             elif ev.type == "inspection_progress":
                 info = ev.data
@@ -238,7 +279,7 @@ class OmnitrixApp:
                 self.screen_home.append_log(
                     f"GATT inspection complete: {len(inventory.characteristics)} characteristics identified."
                 )
-                self.notebook.select(self.screen_details)
+                self.select_screen_by_index(4)
                 messagebox.showinfo(
                     "Inspection Complete",
                     f"Successfully mapped {len(inventory.characteristics)} GATT characteristics.\n\n"
@@ -247,22 +288,23 @@ class OmnitrixApp:
 
             elif ev.type == "error":
                 self.screen_home.append_log(f"ERROR: {ev.message or ev.data}")
+                self.header_bar.set_status("FAULT", color="#f87171", bg_color="#450a0a")
                 messagebox.showerror("Omnitrix BLE Error", f"{ev.message or 'Operation failed'}\n\nDetails: {ev.data}")
 
     def _action_start_scan(self) -> None:
-        self.notebook.select(self.screen_picker)
+        self.select_screen_by_index(3)
         self.screen_picker._handle_scan_click()
 
     def _action_select_device(self, device: DeviceSummary) -> None:
         self.session.select_device(device)
         self.screen_home.set_device_info(device)
-        self.notebook.select(self.screen_home)
+        self.select_screen_by_index(1)
         self.screen_home.append_log(f"Confirmed target selection: {device.display_name}")
 
     def _action_connect(self) -> None:
         if not self.session.selected_device:
             messagebox.showwarning("No Device Selected", "Please scan and select your watch first.")
-            self.notebook.select(self.screen_picker)
+            self.select_screen_by_index(3)
             return
         self.session.connect_selected()
 
@@ -276,7 +318,7 @@ class OmnitrixApp:
                 "You must connect to the watch before inspecting its GATT services.",
             )
             return
-        self.notebook.select(self.screen_details)
+        self.select_screen_by_index(4)
         self.session.inspect_gatt()
 
     def _action_export_inventory(self) -> None:
