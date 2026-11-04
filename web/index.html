@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omnitrix Watch // Web Browser Wearable Simulator</title>
+    <link rel="icon" type="image/x-icon" href="../assets/omnitrix.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Cyber Header -->
+    <header class="cyber-header">
+        <div class="brand-box">
+            <div class="logo-symbol">
+                <div class="logo-inner"></div>
+            </div>
+            <div class="brand-titles">
+                <h1>OMNITRIX WEARABLE SIMULATOR</h1>
+                <div class="subtitle">WEB EDITION // AZMUTH PROTOCOL v1.0</div>
+            </div>
+        </div>
+        <div class="header-badges">
+            <button id="btnAudio" class="badge badge-btn" onclick="toggleAudio()">🔊 AUDIO: ON</button>
+            <div id="stateBadge" class="badge status">STANDBY</div>
+            <div class="badge">TARGET: WEAR OS / AMOLED</div>
+        </div>
+    </header>
+
+    <!-- Main Simulator Stage & Controls -->
+    <main class="simulator-layout">
+        <!-- Watch Canvas Stage -->
+        <section class="watch-stage">
+            <canvas id="watchCanvas" width="480" height="480"></canvas>
+            
+            <div class="touch-controls">
+                <button class="btn-cyber" onclick="window.omnitrixSim.rotateDial(-1)">
+                    ◀ ROTATE [A]
+                </button>
+                <button class="btn-cyber slam-btn" onclick="window.omnitrixSim.slamOrPop()">
+                    💥 SLAM / POP [SPACE]
+                </button>
+                <button class="btn-cyber" onclick="window.omnitrixSim.rotateDial(1)">
+                    ROTATE ▶ [D]
+                </button>
+            </div>
+        </section>
+
+        <!-- Right HUD Sidebar -->
+        <aside class="hud-panel">
+            <!-- 1. Generation Selector -->
+            <div class="card">
+                <div class="card-title">OMNITRIX GENERATION</div>
+                <div class="gen-grid">
+                    <button class="gen-btn active" onclick="switchGen('prototype', this)">CLASSIC</button>
+                    <button class="gen-btn" onclick="switchGen('recalibrated', this)">AF / RECAL</button>
+                    <button class="gen-btn" onclick="switchGen('omniverse', this)">OMNIVERSE</button>
+                    <button class="gen-btn" onclick="switchGen('albedo', this)">ALBEDO (RED)</button>
+                </div>
+            </div>
+
+            <!-- 2. Special Subsystems -->
+            <div class="card">
+                <div class="card-title">SPECIAL SUBSYSTEMS & MODES</div>
+                <div class="subsystem-grid">
+                    <button id="btnMaster" class="btn-sub master-btn" onclick="window.omnitrixSim.toggleMasterControl()">
+                        👑 MASTER CONTROL [M]
+                    </button>
+                    <button class="btn-sub" onclick="window.omnitrixSim.triggerDNAScan()">
+                        🔬 DNA RADAR SCAN [D]
+                    </button>
+                    <button class="btn-sub sdm-btn" onclick="window.omnitrixSim.triggerSelfDestruct()">
+                        ⚠️ SELF-DESTRUCT [S]
+                    </button>
+                    <button class="btn-sub" onclick="window.omnitrixSim.quickRecharge()">
+                        ⚡ FAST RECHARGE [R]
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. Alien DNA Profile & Stats -->
+            <div class="card">
+                <div class="card-title">ACTIVE ALIEN DNA DOSSIER</div>
+                <div class="alien-header">
+                    <div id="alienName" class="alien-title">[01] HEATBLAST</div>
+                    <div id="alienQuote" class="alien-quote">"Let's turn up the heat!"</div>
+                    <div id="alienSpecies" class="alien-meta">Species: Pyronite • Homeworld: Pyros</div>
+                    <div id="alienAbility" class="alien-meta">Ability: Pyrokinesis & Heat Generation</div>
+                </div>
+
+                <div class="stat-group">
+                    <div class="stat-row">
+                        <span class="stat-name">STRENGTH</span>
+                        <div class="stat-track"><div id="stat_strength" class="stat-fill"></div></div>
+                        <span id="val_strength" class="stat-val">65%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">SPEED</span>
+                        <div class="stat-track"><div id="stat_speed" class="stat-fill"></div></div>
+                        <span id="val_speed" class="stat-val">70%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">DEFENSE</span>
+                        <div class="stat-track"><div id="stat_defense" class="stat-fill"></div></div>
+                        <span id="val_defense" class="stat-val">75%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">ENERGY</span>
+                        <div class="stat-track"><div id="stat_energy" class="stat-fill"></div></div>
+                        <span id="val_energy" class="stat-val">95%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-name">INTELLECT</span>
+                        <div class="stat-track"><div id="stat_intellect" class="stat-fill"></div></div>
+                        <span id="val_intellect" class="stat-val">60%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Controls Cheatsheet -->
+            <div class="card">
+                <div class="card-title">HARDWARE INTERACTION CHEAT SHEET</div>
+                <div class="cheat-list">
+                    • <code>Click Core</code> or <code>[Space]</code>: Elevate Pop-Up Core / Slam Transform<br>
+                    • <code>Drag Bezel</code> or <code>[A]/[D]</code> or <code>Scroll Wheel</code>: Spin Alien Dial<br>
+                    • <code>Double Click Core</code> or <code>[R]</code>: Emergency Quick Recharge<br>
+                    • <code>[M]</code>: Master Control Mode (Infinite time + on-the-fly switching)<br>
+                    • <code>[S]</code>: S.D.M. Self-Destruct Klaxon Countdown
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Bottom Alien DNA Roster Ribbon -->
+    <footer class="roster-ribbon" id="rosterContainer">
+        <!-- Injected via JavaScript for all 18 aliens -->
+    </footer>
+
+    <script src="simulator.js"></script>
+    <script>
+        function toggleAudio() {
+            if (!window.omnitrixSim) return;
+            window.omnitrixSim.sound.enabled = !window.omnitrixSim.sound.enabled;
+            const btn = document.getElementById('btnAudio');
+            if (btn) {
+                btn.textContent = window.omnitrixSim.sound.enabled ? "🔊 AUDIO: ON" : "🔇 AUDIO: MUTED";
+                btn.style.color = window.omnitrixSim.sound.enabled ? "var(--omni-green)" : "var(--text-muted)";
+            }
+            if (window.omnitrixSim.sound.enabled) {
+                window.omnitrixSim.sound.playClick();
+            }
+        }
+
+        function switchGen(genKey, btn) {
+            if (!window.omnitrixSim) return;
+            window.omnitrixSim.setGeneration(genKey);
+            document.querySelectorAll('.gen-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
